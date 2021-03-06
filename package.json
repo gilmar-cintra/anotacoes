@@ -5,6 +5,10 @@
   "main": "index.js",
   "author": "Gilmar Cintra",
   "license": "MIT",
+  "scripts": {
+    "build": "tsc -p .",
+    "dev": "nodemon --watch src -e ts,tsx --exec ts-node -r dotenv/config src/server.ts"
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",

@@ -60,6 +60,9 @@ Usamos para criptografar senhas tanto na hora do cadastro quanto na hora de comp
 * connect-redis
 * cors
 * dotenv
+
+Dotenv é um módulo que carrega variáveis ​​de ambiente de um arquivo .env em process.env
+
 * express
 * express-session
 * helmet
@@ -109,7 +112,64 @@ Segue o comando para adicionar todos eles:
 Após instalado, o arquivo package.json deve ser editado e logo depois de "licence": "MIT", deve ser acrescentado:
 
     "scripts": {
-        "start": "nodemon index.js"
+        "build": "tsc -p .",
+        "dev": "nodemon --watch src -e ts,tsx --exec ts-node -r dotenv/config src/server.ts"
     },
 
-Esse trecho indica ao yarn que criamos um novo script chamado “start” e quando chamado ele deve executar o nodemon a partir do arquivo principal a aplicação que neste caso é “index.js”.
+Esse trecho indica ao yarn que criamos um novo script chamado “dev” e quando chamado ele deve executar o nodemon a partir do arquivo principal a aplicação que neste caso é “src/server.ts”. Para executar é só usar o comando:
+
+    yarn dev
+
+## 4) Crie a pasta src e nela precisamos criar dois arquivos, o server.ts e o app.ts (que será importado para o server.ts)
+
+**app.ts**
+
+Nesse arquivo inicialmente faremos:
+1) Importação do pacote express
+2) Seu instanciamento 
+3) A exportação do componente.
+
+Veja como fica nosso código
+
+    import express from 'express';
+
+    const app = express();
+
+    export default app;
+
+**server.ts**
+
+Já no server teremos os seguintes passos:
+1) Importe do modulo app
+3) Definição da porta que usaremos
+4) Adição do bind e do listen das coneções
+
+Ou seja
+
+    import app from "./app";
+
+    const PORT = 3000;
+
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+
+A função app.listen () é usada para realizar o bind e o listen das conexões do host em uma porta especifica.
+
+No entanto carregar a porta manualmente não é uma boa, pois caso seja necessário sua mudança teremo um enorme trabalho, pensando nisso usaremos o pacote **Dotenv** que carrega variáveis ​​de ambiente de um arquivo .env em process.env para isso criamos um arquivo com nome .env na pasta raiz do projeto e adicionamos a porta desejada.
+
+    PORT=3000
+
+Agora podemos melhorar o nosso código
+
+    import app from "./app";
+
+    //É a mesma coisa que const PORT = process.env.PORT
+    const { PORT = 3000 } = process.env
+
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+
+
+Agora melhoraremos o app.ts
