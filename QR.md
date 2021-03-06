@@ -250,9 +250,11 @@ Sua saída no terminal deve ser:
     Server running on port 3000
 
 ## 5) Criando algumas rotas
-Chegou a hora tão esperada por todo o Brasil, a criação de rotas! No entanto iremos criar rotas de maneira em geral e depois organiza-las e otimiza-las corretamente. 
+Chegou a hora tão esperada por todo o Brasil, a criação de rotas! No entanto iremos criar rotas de maneira em geral e depois organiza-las e otimiza-las corretamente. Abaixo segue uma imagem do banco de dados para termos uma idéia da composição do usuário e logo em seguida a lista de rotas que utilizaremos.
+
+![](https://github.com/gilmar-cintra/anotacoes/blob/fac5d1134b8180aae07f68b0f285fd1ceb60e1ec/bd.png)
 
 | Rota | Protocolo | Argumentos | Função | Tipo | Retorno |
 |------|-----------|------------|--------|------|---------|
 | users | POST | name, email e password | Cria o usuario | Pública | name, email e id |
-| users | GET  | id | Obtem todas as informações do usuário | Privada | Todas informações do usuário
+| users | GET  | id | Obtem todas as informações do usuário | Privada | Todas informações do usuário |
