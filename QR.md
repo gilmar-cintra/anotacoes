@@ -55,7 +55,10 @@ Segue o comando para instalar todas essas dependencia de uma única vez:
 
 Usamos para criptografar senhas tanto na hora do cadastro quanto na hora de comparar se a senha digitada pelo usuário na hora de entrar no sistema é a mesma registrada no banco de dados.
 
-* body-parser
+* [body-parser](encurtador.com.br/imtCM)
+
+Ao tentar obter informações enviadas de um formulário usando o médoto POST elas não chegam no formato JSON, o body-parser é um módulo capaz de converter o body da requisição para vários formatos. Um desses formatos é json, exatamente o que queremos.
+
 * class-validator
 * connect-redis
 * cors
