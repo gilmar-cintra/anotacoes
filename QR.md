@@ -8,6 +8,36 @@ Basicamente são iguais, o Yarn nasceu dentro do facebook devido a frustrações
     npm remove ... | yarn remove ... 
 
 # Backend - Passo a passo do sucesso!
+```shell
+├── node_modules
+── config
+│   └── sequelize.js
+├── docker-compose.yml
+├── migrations
+│   └── 20210302204338-User.js
+├── package.json
+├── seeds
+│   └── 20210302211427-Users.js
+├── src
+│   ├── app.ts
+│   ├── auth.ts
+│   ├── controllers
+│   │   ├── auth.ts
+│   │   └── user.ts
+│   ├── models
+│   │   ├── index.ts
+│   │   └── User.ts
+│   ├── routes
+│   │   ├── auth.ts
+│   │   ├── privateRoutes.ts
+│   │   ├── publicRoutes.ts
+│   │   └── user.ts
+│   ├── server.ts
+│   └── types.ts
+├── tsconfig.json
+└── yarn.lock
+```
+
 ## 1) Iniciando o projeto
 Para o backend usaremos o NodeJS e para iniciar um novo projeto basta executar o comando a seguir denttro da pasta desejada:
 
