@@ -62,7 +62,7 @@ Serve para que sigamos o code style guide da Airbnb, uma das empresas referencia
 
 Este plug-in traz suporte a sintaxe de importação / exportação ES2015 + (ES6 +) e evitar problemas com erros de caminhos de arquivo e nomes de importação.
 
-* nodemon
+* [nodemon](encurtador.com.br/uzFNQ)
 
 Reinicia automaticamente o aplicativo (F5) quando mudanças de arquivo ou diretório são detectadas.
 
@@ -139,7 +139,8 @@ Em TypeScript, você pode receber vários erros sobre tipos de módulos não enc
 Segue o comando para adicionar todos eles:
 
     yarn add -D @types/bcryptjs @types/body-parser @types/cors @types/express @types/express-session @types/lodash @types/node @types/passport @types/passport-local @types/pg @types/redis @types/connect-redis @types/sequelize @types/validator @typescript-eslint/eslint-plugin @typescript-eslint/parser
-**Os @types sempre devem ser adicionados em modo desenvolvimento**
+
+**Importante:** Os @types sempre devem ser adicionados em modo desenvolvimento
 
 ## 3) Configurando o package.json
 Após instalado, o arquivo package.json deve ser editado e logo depois de "licence": "MIT", deve ser acrescentado:
@@ -193,6 +194,8 @@ No entanto carregar a porta manualmente não é uma boa, pois caso seja necessá
 
     PORT=3000
 
+**Importante:** Esse arquivo deve ser adicionado ao .gitignore, já que possue informações sensiveis.
+
 Agora podemos melhorar o nosso código
 
     import app from "./app";
@@ -204,5 +207,52 @@ Agora podemos melhorar o nosso código
         console.log(`Server running on port ${PORT}`);
     });
 
+Antes de rodar o nosso código precisamos criar um arquivo tsconfig.json na pasta raiz para configuar as opções do TypeScript, basicamente ele terá o seguinte conteudo. 
 
-Agora melhoraremos o app.ts
+**tsconfig.json**
+
+    {
+    "compilerOptions": {
+        "target": "ESNEXT" /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019' or 'ESNEXT'. */,
+        "module": "commonjs" /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */,
+        "lib": [
+        "es6",
+        "dom"
+        ],
+        "sourceMap": true /* Generates corresponding '.map' file. */,
+        "outDir": "build" /* Redirect output structure to the directory. */,
+        "moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
+        "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
+        "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,
+        "emitDecoratorMetadata": true /* Enables experimental support for emitting type metadata for decorators. */,
+        /* Advanced Options */
+        "resolveJsonModule": true /* Include modules imported with '.json' extension */,
+        "skipLibCheck": true /* Skip type checking of declaration files. */,
+        "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "config/*",
+        "migrations/*",
+        "seeders/*"
+    ]
+    }
+
+Podemos iniciar o servidor para ver se tudo está correto
+
+    yarn dev
+
+Sua saída no terminal deve ser:
+
+    Server running on port 3000
+
+## 5) Criando algumas rotas
+Chegou a hora tão esperada por todo o Brasil, a criação de rotas! No entanto iremos criar rotas de maneira em geral e depois organiza-las e otimiza-las corretamente. 
+
+| Rota | Protocolo | Argumentos | Função | Tipo | Retorno |
+|------|-----------|------------|--------|------|---------|
+| users | POST | name, email e password | Cria o usuario | Pública | name, email e id |
+| users | GET  | id | Obtem todas as informações do usuário | Privada | Todas informações do usuário
