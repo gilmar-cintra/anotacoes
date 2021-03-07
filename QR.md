@@ -250,9 +250,88 @@ Sua saída no terminal deve ser:
     Server running on port 3000
 
 ## 5) Criando algumas rotas
-Chegou a hora tão esperada por todo o Brasil, a criação de rotas! No entanto iremos criar rotas de maneira em geral e depois organiza-las e otimiza-las corretamente. Abaixo segue uma imagem do banco de dados para termos uma idéia da composição do usuário e logo em seguida a lista de rotas que utilizaremos.
+Chegou a hora tão esperada por todo o Brasil, a criação de rotas! No entanto iremos criar rotas de maneira em geral e depois organiza-las e otimiza-las corretamente. Abaixo segue uma imagem do banco de dados para visualizarmos as rotas necessárias:
 
 ![](https://github.com/gilmar-cintra/anotacoes/blob/fac5d1134b8180aae07f68b0f285fd1ceb60e1ec/bd.png)
+
+**Para que serve cada tabela**
+* address
+
+Será utilizada para guardar os endereços dos usuários. 1 usuário pode ter N endereços
+
+* field_type
+
+O curriculo pode ter diferentes sessões (experiência profissional, educação, atividades-extracurriculares, etc) e aqui guardaremos as sessões do curriculo. Cada field pode ter 1 sessão
+
+* field
+
+Aqui ficará as informações especificar da sessão, por exemplo, se for uma experiencia profissiona, terá a data de inicio e fim, função, nome da empresa e descrição. 1 usuário pode e terá N fields, já que o curriculo é a composição deles.
+
+* goal
+
+Guardaremos aqui os objetivos do candidato, pois ele pode ter diferentes vagas compativeis (Estágio, Junior, etc) e escolher uma especifica na hora de gerar o cúrriculo. 1 usuário pode ter N 
+
+Ex: Em busca de uma oportunidade para desenvolver e melhorar meus conhecimentos, e também algo que possa me instruir de forma crescente e contínua, visando sempre o crescimento entre mim e a empresa.
+
+* user
+
+Guardaremos as informações principais do usuario.
+
+* vacancy
+
+A vaga que o candidato deseja cadastrar, lembrando que ele pode deixar guardada várias. 1 usuário pode ter N vacancy
+
+Ex: Programador
+
+
+* language
+
+Aqui será cadastrado globalmente as linguas que o canditado pode inserir no curriculo. 
+
+* language_level
+
+Nessa tabela será armazenada a expertise do candidato na ligua inserida, variando de 1 a 5 estrelas. 1 usuário pode ter N language_level
+
+* skill
+
+Será cadastrado as habilidades disponiveis para o candidato escolher.
+
+Ex: HTML, CSS, JavaScript, NodeJS etc
+
+* skill_level
+
+Nessa tabela será armazenada a expertise do candidato na skill inserida, variando de 1 a 5 estrelas. 1 usuário pode ter N skill_level
+
+* email_type
+
+Aqui será armazenado o tipo de e-mail. 
+Ex: Comercial, pessoal, principal, secundário, etc.
+
+* email
+
+Aqui será armazedo os e-mails para o curriculo. 1 usuário pode ter N e-mails
+
+* phone_type
+
+Aqui será cadastrado o tipo de telefone.
+
+Ex: Comercial, residencial, celular, whatsapp etc.
+
+* phone
+
+Aqui será armazenado o número de telefone em si. 1 usuário pode ter N telefones.
+
+* network_type
+
+Aqui será cadastrado os tipos de redes sociais que poderam constar no Curriculo.
+
+Ex: Linkein, Facebook, Twitter, Instagram etc.
+
+* network
+
+Aqui será armazenado o link da rede social justamente dita. 1 usuário pode ter N network.
+
+
 
 | Rota | Protocolo | Argumentos | Função | Tipo | Retorno |
 |------|-----------|------------|--------|------|---------|
