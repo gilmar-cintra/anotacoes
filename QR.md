@@ -85,7 +85,7 @@ Segue o comando para instalar todas essas dependencia de uma única vez:
 
 Usamos para criptografar senhas tanto na hora do cadastro quanto na hora de comparar se a senha digitada pelo usuário na hora de entrar no sistema é a mesma registrada no banco de dados.
 
-* [body-parser](encurtador.com.br/imtCM)
+* [body-parser](https://encurtador.com.br/imtCM)
 
 Ao tentar obter informações enviadas de um formulário usando o médoto POST elas não chegam no formato JSON, o body-parser é um módulo capaz de converter o body da requisição para vários formatos. Um desses formatos é json, exatamente o que queremos.
 
@@ -107,16 +107,20 @@ Dotenv é um módulo que carrega variáveis ​​de ambiente de um arquivo .env
 * pg-hstore
 * redis
 * reflect-metadata
-* sequelize
+
+
+* [sequelize](https://blog.rocketseat.com.br/nodejs-express-sequelize/)
 * sequelize-cli
 * sequelize-typescript
+
+O Sequelize é um ORM (Object-Relational Mapper) para Node.js, que tem suporte aos bancos de dados PostgreSQL, MariaDB, MySQL, SQLite e MSSQL, como ORM ele faz o mapeamento de dados relacionais (tabelas, colunas e linhas) para objetos Javascript. Ele permite criar, buscar, alterar e remover dados do banco de dados utilizando métodos JS, além de permitir a modificação da estrutura das tabelas, com isso temos muita facilidade tanto na criação, população e migração de banco de dados.
 
 Segue o comando para instalar todos os pacotes:
 
     yarn add bcryptjs body-parser class-validator connect-redis cors dotenv express express-session helmet http-status-codes lodash passport passport-local pg pg-hstore redis reflect-metadata sequelize sequelize-cli sequelize-typescript
 
 ### 2.3) Os @types dos pacotes
-Em TypeScript, você pode receber vários erros sobre tipos de módulos não encontrado ou os “implíticos” any, que ele não consegue inferir o tipo. Para resolver isso podemos criar um arquivo de declarações *.d.ts ou usar o @types do pacote.
+Em TypeScript, você pode receber vários erros sobre tipos de módulos não encontrado ou os “implíticos” any, que ele não consegue inferir o tipo. Para resolver isso podemos criar um arquivo de declarações *.d.ts ou usar o @types do pacote. 
 
 
 * @types/bcryptjs
@@ -331,9 +335,138 @@ Ex: Linkein, Facebook, Twitter, Instagram etc.
 
 Aqui será armazenado o link da rede social justamente dita. 1 usuário pode ter N network.
 
+**Para visualizar as rotas, acesse a documentação no link abaixo**
+
+Link para a documentação
+
+### 5.1) Usando migrations com o Sequelize para manipular o banco de dados
+
+1) Inicie o sequelize usando 
+
+    yarn sequelize init
+
+Esse processo deve criar alguns arquivos no projeto, como a pasta config, migrations, models e seeders.
+
+2) Renomei o config/config.json para config/sequelize.js
+
+Ele terá as configurações do banco de dados, que na verdade deve vir de forma geral do .env veja o exemplo a seguir:
+
+```
+require("dotenv").config();
+
+module.exports = {
+  development: {
+    dialect: "postgres",
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+    repositoryMode: true,
+  },
+};
+```
+
+**Importante:** Você pode criar o banco de dados (nesse exemplo postgres) por meio de um container, para isso basta criar um arquivo chamado docker-composer.yml na raiz do projeto com o seguinte conteudo:
+
+```
+version: "3.1"
+services:
+  nomedoprojeto_db:
+    image: postgres:11.5-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: gilmarcintra
+      POSTGRES_PASSWORD: 12345678
+      POSTGRES_DB: nomedoprojeto
+    volumes:
+      - "resume_db_data:/var/lib/postgresql/data"
+  nomedoprojeto_adminer:
+    image: adminer
+    restart: always
+    depends_on:
+      - resume_db
+    ports:
+      - 8081:8080
+volumes:
+  nomedoprojeto_db_data:
+
+```
+
+Após sua criação é só executar o comando para rodar em background:
+
+    docker-compose up -d
+
+Lembre-se de pausar outros containers que tiverem usando a mesma porta.
+
+Para criar os modelos, podemos iniciar usando o CLI do Sequelize. Veja um exemplo
+
+    node_modules/.bin/sequelize model:generate --name users --attributes id:number,name:string,password:string,email:string,created:Date,updated:Date,active:boolean
+
+Isso gerará o modelo na pasta model e o arquivo de migração em migrations, agora é só editar ao bel prazer.
+
+## 6) Gerando a documentação
+
+Para isso usaremos o Swagger por meio de sua biblioteca
+
+* swagger-ui-express
+
+Vamos instala-las por meio do comando:
+
+    yarn add swagger-ui-express
+
+    yarn add -D @types/swagger-ui-express
+
+Agora criamos um arquivo de configuração chamado swagger.json na pasta raiz do projeto, ele terá toda a configuração e conteúdo de nossa documentação e inicialmente será o seguinte conteúdo.
+
+```
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Currículo Fácil",
+    "description": "Essa é a documentação da API do sistema Currículo Fácil",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localhost:5000",
+  "basePath": "",
+  "tags": [
+    {
+      "name": "Users",
+      "description": "Caminhos para manipulação de usuários"
+    }
+  ],
+  "schemes": "http",
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ]
+}
+```
+
+Agora é simples, basta importa-lo a biblioteca, o arquivo de configuração e definir a rota da documentação no arquivo server.ts
+
+```
+import app from "./app";
+import swaggerUi from 'swagger-ui-express'
+import * as swaggerDocument from '../swagger.json'
+
+const { PORT = 5000 } = process.env;
+
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+```
+
+Para uma referencia completa de como usar o Swagger basta visitar https://swagger.io/docs/specification/about/
 
 
-| Rota | Protocolo | Argumentos | Função | Tipo | Retorno |
-|------|-----------|------------|--------|------|---------|
-| users | POST | name, email e password | Cria o usuario | Pública | name, email e id |
-| users | GET  | id | Obtem todas as informações do usuário | Privada | Todas informações do usuário |
+

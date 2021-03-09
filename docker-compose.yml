@@ -1,0 +1,20 @@
+version: "3.1"
+services:
+  resume_db:
+    image: postgres:11.5-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: gilmarcintra
+      POSTGRES_PASSWORD: 12345678
+      POSTGRES_DB: resume
+    volumes:
+      - "resume_db_data:/var/lib/postgresql/data"
+  resume_adminer:
+    image: adminer
+    restart: always
+    depends_on:
+      - resume_db
+    ports:
+      - 8081:8080
+volumes:
+  resume_db_data:
