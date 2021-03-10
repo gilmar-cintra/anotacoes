@@ -401,9 +401,120 @@ Lembre-se de pausar outros containers que tiverem usando a mesma porta.
 
 Para criar os modelos, podemos iniciar usando o CLI do Sequelize. Veja um exemplo
 
-    node_modules/.bin/sequelize model:generate --name users --attributes id:number,name:string,password:string,email:string,created:Date,updated:Date,active:boolean
+    node_modules/.bin/sequelize model:generate --name users --attributes name:string,password:string,email:string,created:Date,updated:Date,active:boolean
 
-Isso gerará o modelo na pasta model e o arquivo de migração em migrations, agora é só editar ao bel prazer.
+ou
+
+    yarn sequelize migration:generate --name create-fields
+    
+Isso gerará o modelo na pasta model (que não iremos usar, pois definiremos manualmente um .ts) e o arquivo de migração em migrations. Ele já gerará o campo id com autoincremento, o createdAt e o updatedAt.
+
+### 5.2) Definindo modelos e estabelecendo relações
+
+Chegou a hora de definir nossos modelos, para isso na pasta src crie uma pasta chamada models e crie o modelo conforme o exemplo de Field.ts
+
+```
+/* eslint-disable camelcase */
+import {
+  Table,
+  Model,
+  Column,
+  AllowNull,
+  DataType,
+  CreatedAt,
+  UpdatedAt,
+  NotEmpty,
+  BelongsTo,
+} from "sequelize-typescript";
+import { FieldType } from "./FieldType";
+import { User } from "./User";
+
+@Table({ tableName: "fields" })
+export class Field extends Model<Field> {
+  @AllowNull(false)
+  @Column(DataType.INTEGER)
+  userId: number;
+
+  @AllowNull(false)
+  @Column(DataType.INTEGER)
+  fieldTypeId: number;
+
+  @AllowNull(false)
+  @NotEmpty
+  @Column(DataType.TEXT)
+  title: string;
+
+  @AllowNull(false)
+  @NotEmpty
+  @Column(DataType.TEXT)
+  entity: string;
+
+  @AllowNull(false)
+  @Column(DataType.DATEONLY)
+  startDate: Date;
+
+  @AllowNull(true)
+  @Column(DataType.DATEONLY)
+  endDate: Date | null;
+
+  @AllowNull(false)
+  @NotEmpty
+  @Column(DataType.TEXT)
+  description: string;
+
+  @CreatedAt
+  @Column(DataType.DATE)
+  created?: Date;
+
+  @UpdatedAt
+  @Column(DataType.DATE)
+  updated?: Date;
+
+}
+```
+
+Não é necessário criar o campo id, já que ele é extendido da classe Model.
+
+**Estabelecendo relações no modelos **
+Perceba que em nosso modelo existem dois campos (userId e fieldTypeId) que são referencias para outra tabela. Por conta disso devemos fazer essa referencia dizendo ao modelo que esses campos "pertencem" a outra tabela.
+
+```
+  @BelongsTo(() => User, "userId")
+  user?: User;
+
+  @BelongsTo(() => FieldType, "fieldTypeId")
+  fieldType?: FieldType;
+```
+Já no modelo da tabela "dona" desse atributo (FieldType), devemos indicar esse relacionamento colocando
+
+```
+  @HasMany(() => Field, "fieldTypeId")
+  fields?: Field[];
+```
+Já no migration da tabela que conterá a chave estrangeira devemos informar esse(s) relacionamento(s), geralmente fazemos isso após a definição do Id.
+
+```
+      userId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'users',
+          key: 'id',
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE"
+      },
+      fieldTypeId: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'fields_types',
+          key: 'id',
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE"
+      },
+```
 
 ## 6) Gerando a documentação
 

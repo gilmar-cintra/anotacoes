@@ -1,28 +1,43 @@
 'use strict';
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('users', {
+    /**
+     * Add altering commands here.
+     *
+     * Example:
+     * 
+     */
+    await queryInterface.createTable('addresses', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
+      place: {
         allowNull: false,
         type: Sequelize.STRING
       },
-      password: {
+      number: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
+      city: {
         allowNull: false,
         type: Sequelize.STRING
       },
-      email: {
+      state: {
         allowNull: false,
         type: Sequelize.STRING
       },
-      active: {
+      zipcode: {
         allowNull: false,
-        type: Sequelize.BOOLEAN
+        type: Sequelize.STRING
+      },
+      complement: {
+        allowNull: false,
+        type: Sequelize.STRING
       },
       created: {
         allowNull: false,
@@ -34,7 +49,14 @@ module.exports = {
       }
     });
   },
+
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('users');
+    /**
+     * Add reverting commands here.
+     *
+     * Example:
+     * await queryInterface.dropTable('addresses');
+     */
+    await queryInterface.dropTable('addresses');
   }
 };
