@@ -3,6 +3,8 @@ services:
   resume_db:
     image: postgres:11.5-alpine
     restart: always
+    ports:
+      - 5433:5432
     environment:
       POSTGRES_USER: gilmarcintra
       POSTGRES_PASSWORD: 12345678

@@ -516,6 +516,51 @@ Já no migration da tabela que conterá a chave estrangeira devemos informar ess
       },
 ```
 
+## 5.3) Gerando seeders
+
+Podemos gerar algumas inserções de teste para nosso banco de dados, para isso basta usar o comando 
+
+  yarn sequelize seed:generate --name demo-fields_types
+
+Isso gerará um diretório chamado seeders (caso não exista) e um arquivo XXXXXXXX-demo-fields_types.js agora é só editar o seu conteúdo. Veja o exemplo a seguir:
+
+```
+'use strict';
+
+module.exports = {
+  up: async (queryInterface, Sequelize) => {
+    return queryInterface.bulkInsert('fields_types',
+      [{
+        type: 'Formação',
+        created: new Date(),
+        updated: new Date()
+      },
+      {
+        type: 'Experiências',
+        created: new Date(),
+        updated: new Date()
+      }, {
+        type: 'Extracurriculares',
+        created: new Date(),
+        updated: new Date()
+      }
+      ]);
+  },
+
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.bulkDelete('fields_types', null, {});
+  }
+};
+
+```
+Depois é só executar o comando 
+
+  yarn sequelize db:seed:all
+
+E como mágica o banco de dados estará povoado.
+
+**Importante** Caso use o campo password, lembre de usar password: bcrypt.hashSync("minhasenha", bcrypt.genSaltSync(10)),
+
 ## 6) Gerando a documentação
 
 Para isso usaremos o Swagger por meio de sua biblioteca

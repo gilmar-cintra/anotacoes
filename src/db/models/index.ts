@@ -1,5 +1,5 @@
 import { Sequelize, SequelizeOptions } from "sequelize-typescript";
-import sequelizeConfig from "../../config/sequelize.js";
+import sequelizeConfig from "../../../config/sequelize.js";
 import { User } from "./User";
 import { Field } from "./Field";
 import { FieldType } from "./FieldType";
