@@ -25,18 +25,37 @@
     "application/json"
   ],
   "paths": {
-    "/users": {
-      "get": {
+    "/public/users": {
+      "post": {
         "tags": [
           "Users"
         ],
-        "summary": "Retorna todos os usuários",
+        "summary": "Cria um novo usuário",
+        "operationId": "addUser",
+        "consumes": [
+          "application/x-www-form-urlencoded"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "password",
+            "in": "formData",
+            "description": "Updated name of the pet",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Ok",
-            "scheme": {
-              "$ref": "#definitions/users"
+            "description": "Cadastro realizado com sucesso",
+            "schema": {
+              "$ref": "#/definitions/users"
             }
+          },
+          "409": {
+            "description": "O campo senha não pode ser null"
           }
         }
       }

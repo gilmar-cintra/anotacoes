@@ -339,6 +339,60 @@ Aqui será armazenado o link da rede social justamente dita. 1 usuário pode ter
 
 Link para a documentação
 
+Antes de iniciarmos de fato a criação de rotas, precisamos entender como são organizadas e como elas funcionam. Vamos organizar por conceitos:
+
+1) Podemos imaginar que o arquivo app.ts executa os "use" dos modulos sequencialmente, ou seja, se tivermos a seguintes linhas:
+
+  app.use(publicRoutes);
+  app.use(privateRoutes);
+
+Ele usará primeiro o publicRoutes e depois o privateRoutes
+
+2) Podemos ter roteadores dentro de roteadores para uma melhor organização (para isso o roteador principal pode usar pelo comando "use" um roteador secundário), para melhor entender o conceito, basta imaginar uma rede de computadores onde ligamos um roteador a outro roteador de acordo com seu departamento.
+
+3) Sempre separamos as rotas entre publicas (qualquer um tem acesso) e privadas (usuários logados).
+
+4) O nó final da rota sempre apontará para um controller.
+
+Vamos agora criar a estutura e rotas
+
+1) Em src crie uma pasta chamada routes
+
+2) dentro da pasta routes crie 2 arquivo, um chamado publicRoutes.ts e outro privateRoutes.ts Ambos arquivos terão como estrutura incial o seguinte código
+
+```
+import { Router } from 'express';
+
+const router = Router();
+
+
+export default router;
+```
+
+3) Nesse exemplo trabalharemos com o user, por isso também devemos criar um arquivo chamado user.ts na mesma pasta com a rota e o encaminhamento para o seu controller
+
+```
+import { Router } from 'express';
+import { PublicController, PrivateController } from '../controllers/user';
+
+const router = {
+  public: Router(),
+  private: Router(),
+};
+
+router.public.post('/users', PublicController.createUser);
+
+export default router;
+```
+
+Nesse caso temos a rota users que será direcionado para o método createUser do user controller.
+
+4) Adicionamos a rota publica do user no publicRoutes.ts
+
+router.use('/public', user.public);
+
+
+
 ### 5.1) Usando migrations com o Sequelize para manipular o banco de dados
 
 1) Inicie o sequelize usando 
