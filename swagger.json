@@ -1,58 +1,133 @@
 {
-  "openapi": "3.0.0",
+  "openapi": "3.0.1",
   "info": {
-    "version": "1.0.0",
     "title": "Currículo Fácil",
     "description": "Uma ferramenta desenvolvida para gerar currículos de impacto ou simples de forma simples e rápida",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "email": "gilamar@kemiocode.com"
+    },
     "license": {
-      "name": "MIT",
-      "url": "https://opensource.org/licenses/MIT"
-    }
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.0"
   },
-  "host": "localhost:5000",
-  "basePath": "",
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000"
+    }
+  ],
   "tags": [
     {
-      "name": "Users",
-      "description": "Caminhos para manipulação de usuários"
+      "name": "users",
+      "description": "Operações referente aos usuários do sistema",
+      "externalDocs": {
+        "description": "Consulte o modelo do banco de dados para meiores detalhes.",
+        "url": "http://swagger.io"
+      }
     }
-  ],
-  "schemes": "http",
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
   ],
   "paths": {
     "/public/users": {
       "post": {
         "tags": [
-          "Users"
+          "users"
         ],
         "summary": "Cria um novo usuário",
-        "operationId": "addUser",
-        "consumes": [
-          "application/x-www-form-urlencoded"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "password",
-            "in": "formData",
-            "description": "Updated name of the pet",
-            "required": true,
-            "type": "string"
+        "description": "Rota pública para criar um novo usúario no sistema",
+        "operationId": "createUser",
+        "requestBody": {
+          "description": "Os campos created, updated e active são preenchidos automanticamente",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreateFormData"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreateFormData"
+              }
+            }
           }
-        ],
+        },
         "responses": {
           "200": {
-            "description": "Cadastro realizado com sucesso",
-            "schema": {
-              "$ref": "#/definitions/users"
+            "description": "Retorna os campos do usuário recem criado com excessão da senha.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCreateResponse"
+                }
+              }
             }
+          },
+          "409": {
+            "description": "O campo senha não pode ser null"
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/public/auth/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Autentica usuário",
+        "description": "Rota pública para logar usuário",
+        "operationId": "userLogin",
+        "requestBody": {
+          "description": "Os campos created, updated e active são preenchidos automanticamente",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLoginFormData"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/UserLoginFormData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Retorna os campos do usuário recem logado com excessão da senha.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCreateResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "O campo senha não pode ser null"
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/public/auth/logout": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Finaliza sessão do usuário",
+        "description": "Rota pública para deslogar usuário",
+        "operationId": "userLogout",
+        "responses": {
+          "200": {
+            "description": "Retorna os sucesso do ao deslogar usuário"
           },
           "409": {
             "description": "O campo senha não pode ser null"
@@ -61,425 +136,95 @@
       }
     }
   },
-  "definitions": {
-    "users": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "name": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "password": {
-          "type": "string"
-        },
-        "created": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updated": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "active": {
-          "type": "boolean"
+  "components": {
+    "schemas": {
+      "Users": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "active": {
+            "type": "boolean"
+          }
         }
-      }
-    },
-    "addresses": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "place": {
-          "type": "string"
-        },
-        "number": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "city": {
-          "type": "string"
-        },
-        "state": {
-          "type": "string"
-        },
-        "zipcode": {
-          "type": "string"
-        },
-        "complement": {
-          "type": "string"
-        },
-        "iduser": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "created": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updated": {
-          "type": "string",
-          "format": "date-time"
+      },
+      "UserCreateResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "active": {
+            "type": "boolean"
+          }
         }
-      }
-    },
-    "fields": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "title": {
-          "type": "string"
-        },
-        "entity": {
-          "type": "string"
-        },
-        "startDate": {
-          "type": "string",
-          "format": "date"
-        },
-        "endDate": {
-          "type": "string",
-          "format": "date"
-        },
-        "description": {
-          "type": "string"
-        },
-        "idfields_type": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "iduser": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "created": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updated": {
-          "type": "string",
-          "format": "date-time"
+      },
+      "UserCreateFormData": {
+        "type": "object",
+        "required": [
+          "name",
+          "email",
+          "password"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
         }
-      }
-    },
-    "fields_types": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "type": {
-          "type": "string"
-        },
-        "created": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updated": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
-    },
-    "goals": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "goal": {
-          "type": "string"
-        },
-        "iduser": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "created": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updated": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
-    },
-    "vacancies": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "vacancy": {
-          "type": "string"
-        },
-        "iduser": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "created": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updated": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
-    },
-    "languages": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "language": {
-          "type": "string"
-        },
-        "created": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updated": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
-    },
-    "skills": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "skill": {
-          "type": "string"
-        },
-        "created": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updated": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
-    },
-    "languages_levels": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "idlanguage": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "stars": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "iduser": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "created": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updated": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
-    },
-    "skills_levels": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "idskill": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "stars": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "iduser": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "created": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updated": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
-    },
-    "phones_types": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "type": {
-          "type": "string"
-        },
-        "created": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updated": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
-    },
-    "emails_types": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "type": {
-          "type": "string"
-        },
-        "created": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updated": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
-    },
-    "networks_types": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "network": {
-          "type": "string"
-        },
-        "created": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updated": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
-    },
-    "emails": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "email": {
-          "type": "string"
-        },
-        "idemail_type": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "iduser": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "created": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updated": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
-    },
-    "phones": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "phone": {
-          "type": "string"
-        },
-        "idphone_type": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "iduser": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "created": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updated": {
-          "type": "string",
-          "format": "date-time"
-        }
-      }
-    },
-    "network": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "link": {
-          "type": "string"
-        },
-        "idnetwork_type": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "iduser": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "created": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updated": {
-          "type": "string",
-          "format": "date-time"
+      },
+      "UserLoginFormData": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
         }
       }
     }

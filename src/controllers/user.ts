@@ -11,17 +11,15 @@ interface UserCreateFormData {
   password: string;
 }
 
+interface UserLoginFormData {
+  email: string;
+  password: string;
+}
+
 
 export class PublicController {
   public static async createUser(req: Request, res: Response): Promise<any> {
     const formData: UserCreateFormData = req.body;
-
-
-    console.log(req)
-
-
-
-
 
     if (!formData.password) {
       res.status(409);
@@ -47,5 +45,13 @@ export class PublicController {
       res.status(500);
       res.send(err.toString());
     }
+
+
+  }
+
+  public static async login(req: Request, res: Response): Promise<any> {
+    const formData: UserLoginFormData = req.body;
+
+    console.log(formData);
   }
 }

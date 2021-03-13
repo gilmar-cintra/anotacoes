@@ -391,6 +391,22 @@ Nesse caso temos a rota users que será direcionado para o método createUser do
 
 router.use('/public', user.public);
 
+**Adicionando LogIn e senha com Redis**
+
+Antes de mais nada precisamos entender o fluxo tanto de login como para recuperar as informações do usuário.
+
+Login
+1) Requisição POST
+2) Servidor procura pelo e-mail informado no BD (Postegress) e se não encontrar retorna um erro
+3) Se encontrou o e-mail faz uma comparação entre a senha no BD (Postegress) e a senha informada criptografando-a.
+4) Se forem iguais ele cria uma sessão com as informações principais (sessionId, roles, lang etc)
+5) Retorna um cook para o navegador com a sessão
+
+Recuperando um dado
+1) Faz a requisição POST ou GET
+2) Lê o sessionID no cook do navegador e recupera as informações da sessão no DB (Redis)
+3) Verifica sem está autorizado e se tem os devidos privilégios
+4) Se tiver, usa as informações da sessão para recuperar o dado solicitado no DB.
 
 
 ### 5.1) Usando migrations com o Sequelize para manipular o banco de dados
@@ -678,5 +694,6 @@ app.listen(PORT, () => {
 
 Para uma referencia completa de como usar o Swagger basta visitar https://swagger.io/docs/specification/about/
 
+**Importante:** Note que pode existir dois tipos de descrição para a documentação o modelo openapi ou swagger, então preste atenção no começo da descrição do modelo.
 
 
