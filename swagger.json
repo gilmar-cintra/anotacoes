@@ -174,6 +174,31 @@
           }
         }
       }
+    },
+    "/skill/skills": {
+      "get": {
+        "tags": [
+          "skills"
+        ],
+        "summary": "Lista os skills cadastradas no sistema",
+        "description": "Rota privada listar todos os skills do sistema",
+        "operationId": "skills",
+        "responses": {
+          "200": {
+            "description": "Array de objetos skill",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Skills"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuário não logado no sistema"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -275,6 +300,26 @@
             "format": "int64"
           },
           "type": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Skills": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "skill": {
             "type": "string"
           },
           "created": {

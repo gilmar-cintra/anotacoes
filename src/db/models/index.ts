@@ -3,12 +3,14 @@ import sequelizeConfig from "../../../config/sequelize.js";
 import { User } from "./User";
 import { Field } from "./Field";
 import { FieldType } from "./FieldType";
+import { Skills } from "./Skills";
+import { SkillLevel } from "./SkillLevel";
 
 // DB stuff
 const { NODE_ENV = "development" } = process.env;
 const sequelizeOptions: SequelizeOptions = sequelizeConfig[NODE_ENV];
 const sequelize = new Sequelize(sequelizeOptions);
-const models = [User, Field, FieldType];
+const models = [User, Field, FieldType, Skills, SkillLevel];
 sequelize.addModels(models);
 // loga no banco
 sequelize

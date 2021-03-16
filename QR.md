@@ -655,7 +655,9 @@ Depois é só executar o comando
 
   yarn sequelize db:seed:all
 
-E como mágica o banco de dados estará povoado.
+E como mágica o banco de dados estará povoado. Caso precise apenas fazer o seed de uma tabela, basta usar o comando
+
+  yarn sequelize db:seed --seed [seed file name]
 
 **Importante** Caso use o campo password, lembre de usar password: bcrypt.hashSync("minhasenha", bcrypt.genSaltSync(10)),
 

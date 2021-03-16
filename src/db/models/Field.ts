@@ -58,5 +58,5 @@ export class Field extends Model<Field> {
   user?: User;
 
   @BelongsTo(() => FieldType, "fieldTypeId")
-  fieldType?: FieldType;
+  fieldType?: FieldType[];
 }
