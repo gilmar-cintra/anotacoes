@@ -7,10 +7,8 @@ const router = {
 };
 
 router.public.post('/auth/login', PublicController.login);
-
-/*
 router.public.post('/auth/logout', PublicController.logout);
 router.private.get('/auth/check_session', PrivateController.checkSession);
-*/
+
 
 export default router;

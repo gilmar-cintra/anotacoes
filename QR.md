@@ -408,6 +408,34 @@ Recuperando um dado
 3) Verifica sem está autorizado e se tem os devidos privilégios
 4) Se tiver, usa as informações da sessão para recuperar o dado solicitado no DB.
 
+Agora que já sabemos a lógica básica, vamos iniciar o nosso banco de dados, para isso é só adicionar os seguinte código ao arquvio docker-compose.yml
+
+```
+  projeto_redis:
+    image: redis:alpine
+    command: redis-server --requirepass 12345678
+    restart: always
+    ports:
+      - 6380:6379
+    volumes:
+      - "projeto_redis_data:/var/lib/redis"
+```
+Não esqueça de colocar o volume que armazenará os dados
+
+```
+  projeto_redis_data:
+```
+Agora é só adicionar as informações para conexão no arquivo .env
+
+```
+REDIS_HOST=localhost
+REDIS_PORT=6380
+REDIS_PASSWORD=12345678
+SESS_SECRET_OLD=a-vida-eh-bela-como-um-gato-na-janela
+SESS_SECRET_NEW=olha-o-preco-da-casa
+SESS_LIFETIME=7200000
+SESS_NAME=sid
+```
 
 ### 5.1) Usando migrations com o Sequelize para manipular o banco de dados
 

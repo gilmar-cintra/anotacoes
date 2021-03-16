@@ -80,28 +80,28 @@
         "tags": [
           "auth"
         ],
-        "summary": "Autentica usuário",
-        "description": "Rota pública para logar usuário",
-        "operationId": "userLogin",
+        "summary": "Possibilita o login do usuario",
+        "description": "Rota pública para logar os usuários no sistema",
+        "operationId": "login",
         "requestBody": {
-          "description": "Os campos created, updated e active são preenchidos automanticamente",
+          "description": "Os campos e-mail e password são obrigatórios",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserLoginFormData"
+                "$ref": "#/components/schemas/LoginFormData"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/UserLoginFormData"
+                "$ref": "#/components/schemas/LoginFormData"
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Retorna os campos do usuário recem logado com excessão da senha.",
+            "description": "Login realizado com sucesso!",
             "content": {
               "application/json": {
                 "schema": {
@@ -110,8 +110,8 @@
               }
             }
           },
-          "409": {
-            "description": "O campo senha não pode ser null"
+          "401": {
+            "description": "Não autorizado"
           }
         },
         "x-codegen-request-body-name": "body"
@@ -122,15 +122,55 @@
         "tags": [
           "auth"
         ],
-        "summary": "Finaliza sessão do usuário",
-        "description": "Rota pública para deslogar usuário",
-        "operationId": "userLogout",
+        "summary": "Possibilita o logout do usuario",
+        "description": "Rota pública para deslogar os usuários no sistema",
+        "operationId": "logout",
         "responses": {
           "200": {
-            "description": "Retorna os sucesso do ao deslogar usuário"
+            "description": "Logout realizado com sucesso!"
+          }
+        }
+      }
+    },
+    "/auth/check_session": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Possibilita verificar se o usuário está logado do usuario",
+        "description": "Rota privada para logar os usuários no sistema",
+        "operationId": "check",
+        "responses": {
+          "200": {
+            "description": "Usuário está com sessão válida"
           },
-          "409": {
-            "description": "O campo senha não pode ser null"
+          "401": {
+            "description": "Usuário sem sessão válida"
+          }
+        }
+      }
+    },
+    "/field/fields_types": {
+      "get": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Lista os fields type do usuário",
+        "description": "Rota privada listar todos os fields types do sistema",
+        "operationId": "fieldTypes",
+        "responses": {
+          "200": {
+            "description": "Array de objetos field type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FieldType"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuário não logado no sistema"
           }
         }
       }
@@ -212,7 +252,7 @@
           }
         }
       },
-      "UserLoginFormData": {
+      "LoginFormData": {
         "type": "object",
         "required": [
           "email",
@@ -224,6 +264,26 @@
           },
           "password": {
             "type": "string"
+          }
+        }
+      },
+      "FieldType": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "type": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       }

@@ -5,9 +5,6 @@ import passport from 'passport';
 export class PublicController {
   public static async login(req: Request, res: Response, next: NextFunction): Promise<any> {
 
-    res.send("LoginController");
-    /*
-    
     passport.authenticate('local', (err, user, info) => {
       if (err) {
         res.status(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -29,15 +26,15 @@ export class PublicController {
         res.send(user);
       });
     })(req, res, next);
-    */
+
   }
 
-  /*
+
   public static async logout(req: Request, res: Response): Promise<any> {
     req.logout();
     res.end();
   }
-  */
+
 }
 
 export class PrivateController {

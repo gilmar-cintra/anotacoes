@@ -11,6 +11,14 @@ services:
       POSTGRES_DB: resume
     volumes:
       - "resume_db_data:/var/lib/postgresql/data"
+  resume_redis:
+    image: redis:alpine
+    command: redis-server --requirepass 12345678
+    restart: always
+    ports:
+      - 6380:6379
+    volumes:
+      - "resume_redis_data:/var/lib/redis"
   resume_adminer:
     image: adminer
     restart: always
@@ -20,3 +28,4 @@ services:
       - 8081:8080
 volumes:
   resume_db_data:
+  resume_redis_data:

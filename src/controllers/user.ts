@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { User } from '../db/models/User';
 import sequelize from '../db/models/index';
-import { send } from 'node:process';
+
 //import { UserCreateFormData } from '../types';
 
 interface UserCreateFormData {
