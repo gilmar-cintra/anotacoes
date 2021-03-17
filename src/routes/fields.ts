@@ -6,6 +6,7 @@ const router = {
 };
 
 router.private.get('/fields_types', PrivateController.getFieldsTypes);
+router.private.get('/fields/:userId', PrivateController.getFields);
 
 
 export default router;

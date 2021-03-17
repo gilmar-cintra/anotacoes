@@ -175,6 +175,195 @@
         }
       }
     },
+    "/field/fields/{userId}": {
+      "get": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Lista os fields do usuário no sistema",
+        "description": "Rota privada que só pode ser acessado pelo mesmo id de quem estiver logado",
+        "operationId": "listFields",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "Id do usuário",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array de objetos field",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Field"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          },
+          "403": {
+            "description": "Usuário logado diferente do que se busca o Id"
+          }
+        }
+      }
+    },
+    "/field/{fieldId}": {
+      "get": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Pega um especifico field do do usuário no sistema",
+        "description": "Rota privada que só pode ser acessado pelo mesmo id de quem estiver logado",
+        "operationId": "field",
+        "parameters": [
+          {
+            "name": "fieldId",
+            "in": "path",
+            "description": "Id do field",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Objeto field",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Field"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          },
+          "403": {
+            "description": "Usuário logado diferente do que se busca o Id"
+          }
+        }
+      }
+    },
+    "/field": {
+      "post": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Cria um novo field para o usuário",
+        "description": "Rota privada só com acesso logado",
+        "operationId": "createField",
+        "requestBody": {
+          "description": "Os campos created e updated são preenchidos automanticamente",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FieldCreateFormData"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/FieldCreateFormData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Objeto field",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Field"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          },
+          "403": {
+            "description": "Usuário logado diferente do que se busca o Id"
+          }
+        }
+      }
+    },
+    "/field": {
+      "put": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Atualiza um field existente do usuário",
+        "description": "Rota privada só com acesso logado",
+        "operationId": "updateField",
+        "requestBody": {
+          "description": "Os campos created e updated são preenchidos automanticamente",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FieldCreateFormData"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/FieldCreateFormData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Objeto field",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Field"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          },
+          "403": {
+            "description": "Usuário logado diferente do que se busca o Id"
+          }
+        }
+      }
+    },
+    "/field": {
+      "delete": {
+        "tags": [
+          "field"
+        ],
+        "summary": "Deleta um field existente do usuário",
+        "description": "Rota privada só com acesso logado",
+        "operationId": "deleteField",
+        "responses": {
+          "200": {
+            "description": "Field excluido com sucesso"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          },
+          "403": {
+            "description": "Usuário logado diferente do que se busca o Id"
+          }
+        }
+      }
+    },
     "/skill/skills": {
       "get": {
         "tags": [
@@ -196,6 +385,46 @@
           },
           "401": {
             "description": "Usuário não logado no sistema"
+          }
+        }
+      }
+    },
+    "/skill/levels/{userId}": {
+      "get": {
+        "tags": [
+          "skills"
+        ],
+        "summary": "Lista os skills do usuário no sistema",
+        "description": "Rota privada que só pode ser acessado pelo mesmo id de quem estiver logado",
+        "operationId": "listSkills",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "Id do usuário",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array de objetos skill levels",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SkillsLevels"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          },
+          "403": {
+            "description": "Usuário logado diferente do que se busca o Id"
           }
         }
       }
@@ -312,6 +541,74 @@
           }
         }
       },
+      "Field": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "fieldTypeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "entity": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "description": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "FieldCreateFormData": {
+        "type": "object",
+        "properties": {
+          "fieldTypeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "entity": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
       "Skills": {
         "type": "object",
         "properties": {
@@ -321,6 +618,35 @@
           },
           "skill": {
             "type": "string"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "SkillsLevels": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "skillId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "stars": {
+            "type": "integer",
+            "format": "int64"
           },
           "created": {
             "type": "string",

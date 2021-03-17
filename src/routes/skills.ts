@@ -6,6 +6,7 @@ const router = {
 };
 
 router.private.get('/skills', PrivateController.getSkills);
+router.private.get('/levels/:userId', PrivateController.getLevels);
 
 
 export default router;

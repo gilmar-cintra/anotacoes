@@ -14,6 +14,7 @@ import {
   HasMany,
 } from "sequelize-typescript";
 import { Field } from "./Field";
+import { SkillLevel } from "./SkillLevel";
 
 @Table({ tableName: "users" })
 @DefaultScope(() => ({
@@ -51,4 +52,7 @@ export class User extends Model<User> {
 
   @HasMany(() => Field, "userId")
   fields?: Field[];
+
+  @HasMany(() => SkillLevel, "userId")
+  skillLevels?: SkillLevel[];
 }

@@ -613,6 +613,9 @@ Já no migration da tabela que conterá a chave estrangeira devemos informar ess
         onDelete: "CASCADE"
       },
 ```
+Para exetucar um migration é só utilizar o comando
+  
+  yarn sequelize db:migrate
 
 ## 5.3) Gerando seeders
 
