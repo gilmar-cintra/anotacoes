@@ -24,19 +24,23 @@
   ],
   "tags": [
     {
-      "name": "users",
-      "description": "Operações referente aos usuários do sistema",
-      "externalDocs": {
-        "description": "Consulte o modelo do banco de dados para meiores detalhes.",
-        "url": "http://swagger.io"
-      }
+      "name": "Users",
+      "description": "Operações referente aos usuários."
+    },
+    {
+      "name": "Auth",
+      "description": "Login, logout e verificação de sessão."
+    },
+    {
+      "name": "Fields",
+      "description": "Gerencia os campos do curriculo. (experiências, educação, extracurriculares, etc)"
     }
   ],
   "paths": {
     "/public/users": {
       "post": {
         "tags": [
-          "users"
+          "Users"
         ],
         "summary": "Cria um novo usuário",
         "description": "Rota pública para criar um novo usúario no sistema",
@@ -78,7 +82,7 @@
     "/public/auth/login": {
       "post": {
         "tags": [
-          "auth"
+          "Auth"
         ],
         "summary": "Possibilita o login do usuario",
         "description": "Rota pública para logar os usuários no sistema",
@@ -120,7 +124,7 @@
     "/public/auth/logout": {
       "post": {
         "tags": [
-          "auth"
+          "Auth"
         ],
         "summary": "Possibilita o logout do usuario",
         "description": "Rota pública para deslogar os usuários no sistema",
@@ -135,7 +139,7 @@
     "/auth/check_session": {
       "get": {
         "tags": [
-          "auth"
+          "Auth"
         ],
         "summary": "Possibilita verificar se o usuário está logado do usuario",
         "description": "Rota privada para logar os usuários no sistema",
@@ -150,14 +154,14 @@
         }
       }
     },
-    "/field/fields_types": {
+    "/fields/types": {
       "get": {
         "tags": [
-          "field"
+          "Fields"
         ],
-        "summary": "Lista os fields type do usuário",
+        "summary": "Retorna todos os tipos de fields",
         "description": "Rota privada listar todos os fields types do sistema",
-        "operationId": "fieldTypes",
+        "operationId": "fieldsTypes",
         "responses": {
           "200": {
             "description": "Array de objetos field type",
@@ -175,90 +179,10 @@
         }
       }
     },
-    "/field/fields/{userId}": {
-      "get": {
-        "tags": [
-          "field"
-        ],
-        "summary": "Lista os fields do usuário no sistema",
-        "description": "Rota privada que só pode ser acessado pelo mesmo id de quem estiver logado",
-        "operationId": "listFields",
-        "parameters": [
-          {
-            "name": "userId",
-            "in": "path",
-            "description": "Id do usuário",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Array de objetos field",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Field"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Erro interno do servidor"
-          },
-          "403": {
-            "description": "Usuário logado diferente do que se busca o Id"
-          }
-        }
-      }
-    },
-    "/field/{fieldId}": {
-      "get": {
-        "tags": [
-          "field"
-        ],
-        "summary": "Pega um especifico field do do usuário no sistema",
-        "description": "Rota privada que só pode ser acessado pelo mesmo id de quem estiver logado",
-        "operationId": "field",
-        "parameters": [
-          {
-            "name": "fieldId",
-            "in": "path",
-            "description": "Id do field",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Objeto field",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Field"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Erro interno do servidor"
-          },
-          "403": {
-            "description": "Usuário logado diferente do que se busca o Id"
-          }
-        }
-      }
-    },
-    "/field": {
+    "/fields": {
       "post": {
         "tags": [
-          "field"
+          "Fields"
         ],
         "summary": "Cria um novo field para o usuário",
         "description": "Rota privada só com acesso logado",
@@ -290,23 +214,99 @@
               }
             }
           },
+          "204": {
+            "description": "Usuário envio algum campo do formulário em branco"
+          },
+          "401": {
+            "description": "Usuário logado diferente do que se busca o Id"
+          },
           "500": {
             "description": "Erro interno do servidor"
-          },
-          "403": {
-            "description": "Usuário logado diferente do que se busca o Id"
           }
         }
+      },
+      "get": {
+        "summary": "Retorna todos fields do usuário logado",
+        "description": "Rota privada que lista os fields do usuário na sessão",
+        "operationId": "listFields",
+        "responses": {
+          "200": {
+            "description": "array de objetos fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Field"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        },
+        "tags": [
+          "Fields"
+        ]
       }
     },
-    "/field": {
+    "/fields/{fieldId}": {
+      "get": {
+        "tags": [
+          "Fields"
+        ],
+        "summary": "Retorna um field especifico pelo seu Id, desde que seja de propriedade do usuário",
+        "description": "Rota privada que só pode ser acessado pelo mesmo id de quem estiver logado",
+        "operationId": "field",
+        "parameters": [
+          {
+            "name": "fieldId",
+            "in": "path",
+            "description": "Id do field",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna um objeto field",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Field"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuário logado diferente do que se busca"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      },
       "put": {
         "tags": [
-          "field"
+          "Fields"
         ],
-        "summary": "Atualiza um field existente do usuário",
+        "summary": "Atualiza um field especifico pelo seu Id, desde que seja de propriedade do usuário",
         "description": "Rota privada só com acesso logado",
-        "operationId": "updateField",
+        "operationId": "editField",
+        "parameters": [
+          {
+            "name": "fieldId",
+            "in": "path",
+            "description": "Id do field",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
         "requestBody": {
           "description": "Os campos created e updated são preenchidos automanticamente",
           "required": true,
@@ -334,32 +334,265 @@
               }
             }
           },
+          "204": {
+            "description": "Usuário envio algum campo do formulário em branco"
+          },
+          "401": {
+            "description": "Usuário logado diferente do que se busca o Id"
+          },
           "500": {
             "description": "Erro interno do servidor"
-          },
-          "403": {
-            "description": "Usuário logado diferente do que se busca o Id"
           }
         }
-      }
-    },
-    "/field": {
+      },
       "delete": {
         "tags": [
-          "field"
+          "Fields"
         ],
-        "summary": "Deleta um field existente do usuário",
+        "summary": "Deleta o um field especifico pelo seu Id, desde que seja de propriedade do usuário",
         "description": "Rota privada só com acesso logado",
         "operationId": "deleteField",
+        "parameters": [
+          {
+            "name": "fieldId",
+            "in": "path",
+            "description": "Id do field",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Field excluido com sucesso"
           },
+          "401": {
+            "description": "Usuário logado diferente do que se busca o Id"
+          },
           "500": {
             "description": "Erro interno do servidor"
+          }
+        }
+      }
+    },
+    "/emails/types": {
+      "get": {
+        "tags": [
+          "Emails"
+        ],
+        "summary": "Retorna todos os tipos de emails",
+        "description": "Rota privada listar todos os emails types do sistema",
+        "operationId": "emailsTypes",
+        "responses": {
+          "200": {
+            "description": "Array de objetos email type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailType"
+                }
+              }
+            }
           },
-          "403": {
+          "401": {
+            "description": "Usuário não logado no sistema"
+          }
+        }
+      }
+    },
+    "/emails": {
+      "post": {
+        "tags": [
+          "Emails"
+        ],
+        "summary": "Cria um novo email para o usuário",
+        "description": "Rota privada só com acesso logado",
+        "operationId": "createEmail",
+        "requestBody": {
+          "description": "Os campos created e updated são preenchidos automanticamente",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailCreateFormData"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailCreateFormData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Objeto email",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Email"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Usuário envio algum campo do formulário em branco"
+          },
+          "401": {
             "description": "Usuário logado diferente do que se busca o Id"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      },
+      "get": {
+        "summary": "Retorna todos emails do usuário logado",
+        "description": "Rota privada que lista os emails do usuário na sessão",
+        "operationId": "listEmails",
+        "responses": {
+          "200": {
+            "description": "array de objetos email",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Email"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        },
+        "tags": [
+          "Emails"
+        ]
+      }
+    },
+    "/emails/{emailId}": {
+      "get": {
+        "tags": [
+          "Emails"
+        ],
+        "summary": "Retorna um email especifico pelo seu Id, desde que seja de propriedade do usuário",
+        "description": "Rota privada que só pode ser acessado pelo mesmo id de quem estiver logado",
+        "operationId": "email",
+        "parameters": [
+          {
+            "name": "emailId",
+            "in": "path",
+            "description": "Id do email",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna um objeto email",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Email"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuário logado diferente do que se busca"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Emails"
+        ],
+        "summary": "Atualiza um email especifico pelo seu Id, desde que seja de propriedade do usuário",
+        "description": "Rota privada só com acesso logado",
+        "operationId": "editEmail",
+        "parameters": [
+          {
+            "name": "emailId",
+            "in": "path",
+            "description": "Id do email",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Os campos created e updated são preenchidos automanticamente",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailEditFormData"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailEditFormData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Objeto email",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Email"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Usuário envio algum campo do formulário em branco"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Emails"
+        ],
+        "summary": "Deleta o um email especifico pelo seu Id, desde que seja de propriedade do usuário",
+        "description": "Rota privada só com acesso logado",
+        "operationId": "deleteEmail",
+        "parameters": [
+          {
+            "name": "emailId",
+            "in": "path",
+            "description": "Id do email",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "email excluido com sucesso"
+          },
+          "401": {
+            "description": "Usuário logado diferente do que se busca o Id"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
           }
         }
       }
@@ -420,11 +653,866 @@
               }
             }
           },
+          "401": {
+            "description": "Usuário logado diferente do que se busca o Id"
+          },
           "500": {
             "description": "Erro interno do servidor"
+          }
+        }
+      }
+    },
+    "/phones/types": {
+      "get": {
+        "tags": [
+          "Phones"
+        ],
+        "summary": "Retorna todos os tipos de phones",
+        "description": "Rota privada listar todos os phones types do sistema",
+        "operationId": "phonesTypes",
+        "responses": {
+          "200": {
+            "description": "Array de objetos phone type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PhoneType"
+                }
+              }
+            }
           },
-          "403": {
+          "401": {
+            "description": "Usuário não logado no sistema"
+          }
+        }
+      }
+    },
+    "/phones": {
+      "post": {
+        "tags": [
+          "Phones"
+        ],
+        "summary": "Cria um novo phone para o usuário",
+        "description": "Rota privada só com acesso logado",
+        "operationId": "createPhone",
+        "requestBody": {
+          "description": "Os campos created e updated são preenchidos automanticamente",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PhoneCreateFormData"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PhoneCreateFormData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Objeto phone",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Phone"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Usuário envio algum campo do formulário em branco"
+          },
+          "401": {
             "description": "Usuário logado diferente do que se busca o Id"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      },
+      "get": {
+        "summary": "Retorna todos phones do usuário logado",
+        "description": "Rota privada que lista os phones do usuário na sessão",
+        "operationId": "listPhones",
+        "responses": {
+          "200": {
+            "description": "array de objetos phone",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Phone"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        },
+        "tags": [
+          "Phones"
+        ]
+      }
+    },
+    "/phones/{phoneId}": {
+      "get": {
+        "tags": [
+          "Phones"
+        ],
+        "summary": "Retorna um phone especifico pelo seu Id, desde que seja de propriedade do usuário",
+        "description": "Rota privada que só pode ser acessado pelo mesmo id de quem estiver logado",
+        "operationId": "phone",
+        "parameters": [
+          {
+            "name": "phoneId",
+            "in": "path",
+            "description": "Id do phone",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna um objeto phone",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Phone"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuário logado diferente do que se busca"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Phones"
+        ],
+        "summary": "Atualiza um phone especifico pelo seu Id, desde que seja de propriedade do usuário",
+        "description": "Rota privada só com acesso logado",
+        "operationId": "editPhone",
+        "parameters": [
+          {
+            "name": "phoneId",
+            "in": "path",
+            "description": "Id do phone",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Os campos created e updated são preenchidos automanticamente",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PhoneEditFormData"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PhoneEditFormData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Objeto phone",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Phone"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Usuário envio algum campo do formulário em branco"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Phones"
+        ],
+        "summary": "Deleta o um phone especifico pelo seu Id, desde que seja de propriedade do usuário",
+        "description": "Rota privada só com acesso logado",
+        "operationId": "deletePhone",
+        "parameters": [
+          {
+            "name": "phoneId",
+            "in": "path",
+            "description": "Id do phone",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "phone excluido com sucesso"
+          },
+          "401": {
+            "description": "Usuário logado diferente do que se busca o Id"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      }
+    },
+    "/networks/types": {
+      "get": {
+        "tags": [
+          "Networks"
+        ],
+        "summary": "Retorna todos os tipos de networks",
+        "description": "Rota privada listar todos os networks types do sistema",
+        "operationId": "networksTypes",
+        "responses": {
+          "200": {
+            "description": "Array de objetos network type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NetworkType"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuário não logado no sistema"
+          }
+        }
+      }
+    },
+    "/networks": {
+      "post": {
+        "tags": [
+          "Networks"
+        ],
+        "summary": "Cria um novo network para o usuário",
+        "description": "Rota privada só com acesso logado",
+        "operationId": "createNetwork",
+        "requestBody": {
+          "description": "Os campos created e updated são preenchidos automanticamente",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NetworkCreateFormData"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/NetworkCreateFormData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Objeto network",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Network"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Usuário envio algum campo do formulário em branco"
+          },
+          "401": {
+            "description": "Usuário logado diferente do que se busca o Id"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      },
+      "get": {
+        "summary": "Retorna todos networks do usuário logado",
+        "description": "Rota privada que lista os networks do usuário na sessão",
+        "operationId": "listNetworks",
+        "responses": {
+          "200": {
+            "description": "array de objetos network",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Network"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        },
+        "tags": [
+          "Networks"
+        ]
+      }
+    },
+    "/networks/{networkId}": {
+      "get": {
+        "tags": [
+          "Networks"
+        ],
+        "summary": "Retorna um network especifico pelo seu Id, desde que seja de propriedade do usuário",
+        "description": "Rota privada que só pode ser acessado pelo mesmo id de quem estiver logado",
+        "operationId": "network",
+        "parameters": [
+          {
+            "name": "networkId",
+            "in": "path",
+            "description": "Id do network",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna um objeto network",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Network"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuário logado diferente do que se busca"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Networks"
+        ],
+        "summary": "Atualiza um network especifico pelo seu Id, desde que seja de propriedade do usuário",
+        "description": "Rota privada só com acesso logado",
+        "operationId": "editNetwork",
+        "parameters": [
+          {
+            "name": "networkId",
+            "in": "path",
+            "description": "Id do network",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Os campos created e updated são preenchidos automanticamente",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NetworkEditFormData"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/NetworkEditFormData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Objeto network",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Network"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Usuário envio algum campo do formulário em branco"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Networks"
+        ],
+        "summary": "Deleta o um network especifico pelo seu Id, desde que seja de propriedade do usuário",
+        "description": "Rota privada só com acesso logado",
+        "operationId": "deleteNetwork",
+        "parameters": [
+          {
+            "name": "networkId",
+            "in": "path",
+            "description": "Id do network",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "network excluido com sucesso"
+          },
+          "401": {
+            "description": "Usuário logado diferente do que se busca o Id"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      }
+    },
+    "/languages/types": {
+      "get": {
+        "tags": [
+          "Languages"
+        ],
+        "summary": "Retorna todos os tipos de languages",
+        "description": "Rota privada listar todos os languages types do sistema",
+        "operationId": "languagesTypes",
+        "responses": {
+          "200": {
+            "description": "Array de objetos language type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LanguageType"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuário não logado no sistema"
+          }
+        }
+      }
+    },
+    "/languages": {
+      "post": {
+        "tags": [
+          "Languages"
+        ],
+        "summary": "Cria um novo language para o usuário",
+        "description": "Rota privada só com acesso logado",
+        "operationId": "createLanguage",
+        "requestBody": {
+          "description": "Os campos created e updated são preenchidos automanticamente",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LanguageCreateFormData"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/LanguageCreateFormData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Objeto language",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Language"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Usuário envio algum campo do formulário em branco"
+          },
+          "401": {
+            "description": "Usuário logado diferente do que se busca o Id"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      },
+      "get": {
+        "summary": "Retorna todos languages do usuário logado",
+        "description": "Rota privada que lista os languages do usuário na sessão",
+        "operationId": "listLanguages",
+        "responses": {
+          "200": {
+            "description": "array de objetos language",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Language"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        },
+        "tags": [
+          "Languages"
+        ]
+      }
+    },
+    "/languages/{languageId}": {
+      "get": {
+        "tags": [
+          "Languages"
+        ],
+        "summary": "Retorna um language especifico pelo seu Id, desde que seja de propriedade do usuário",
+        "description": "Rota privada que só pode ser acessado pelo mesmo id de quem estiver logado",
+        "operationId": "language",
+        "parameters": [
+          {
+            "name": "languageId",
+            "in": "path",
+            "description": "Id do language",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna um objeto language",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Language"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuário logado diferente do que se busca"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Languages"
+        ],
+        "summary": "Atualiza um language especifico pelo seu Id, desde que seja de propriedade do usuário",
+        "description": "Rota privada só com acesso logado",
+        "operationId": "editLanguage",
+        "parameters": [
+          {
+            "name": "languageId",
+            "in": "path",
+            "description": "Id do language",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Os campos created e updated são preenchidos automanticamente",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LanguageEditFormData"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/LanguageEditFormData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Objeto language",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Language"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Usuário envio algum campo do formulário em branco"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Languages"
+        ],
+        "summary": "Deleta o um language especifico pelo seu Id, desde que seja de propriedade do usuário",
+        "description": "Rota privada só com acesso logado",
+        "operationId": "deleteLanguage",
+        "parameters": [
+          {
+            "name": "languageId",
+            "in": "path",
+            "description": "Id do language",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "language excluido com sucesso"
+          },
+          "401": {
+            "description": "Usuário logado diferente do que se busca o Id"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      }
+    },
+    "/vancancies": {
+      "post": {
+        "tags": [
+          "Vancancies"
+        ],
+        "summary": "Cria um novo vancancy para o usuário",
+        "description": "Rota privada só com acesso logado",
+        "operationId": "createVacancy",
+        "requestBody": {
+          "description": "Os campos created e updated são preenchidos automanticamente",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailCreateFormData"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailCreateFormData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Objeto vancancy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Vacancy"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Usuário envio algum campo do formulário em branco"
+          },
+          "401": {
+            "description": "Usuário logado diferente do que se busca o Id"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      },
+      "get": {
+        "summary": "Retorna todos vancancies do usuário logado",
+        "description": "Rota privada que lista os vancancies do usuário na sessão",
+        "operationId": "listVancancies",
+        "responses": {
+          "200": {
+            "description": "array de objetos vancancy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Vacancy"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        },
+        "tags": [
+          "Vancancies"
+        ]
+      }
+    },
+    "/vancancies/{emailId}": {
+      "get": {
+        "tags": [
+          "Vancancies"
+        ],
+        "summary": "Retorna um vancancy especifico pelo seu Id, desde que seja de propriedade do usuário",
+        "description": "Rota privada que só pode ser acessado pelo mesmo id de quem estiver logado",
+        "operationId": "vancancy",
+        "parameters": [
+          {
+            "name": "emailId",
+            "in": "path",
+            "description": "Id do vancancy",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Retorna um objeto vancancy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Vacancy"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuário logado diferente do que se busca"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Vancancies"
+        ],
+        "summary": "Atualiza um vancancy especifico pelo seu Id, desde que seja de propriedade do usuário",
+        "description": "Rota privada só com acesso logado",
+        "operationId": "editVacancy",
+        "parameters": [
+          {
+            "name": "emailId",
+            "in": "path",
+            "description": "Id do vancancy",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Os campos created e updated são preenchidos automanticamente",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailEditFormData"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/EmailEditFormData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Objeto vancancy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Vacancy"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Usuário envio algum campo do formulário em branco"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Vancancies"
+        ],
+        "summary": "Deleta o um vancancy especifico pelo seu Id, desde que seja de propriedade do usuário",
+        "description": "Rota privada só com acesso logado",
+        "operationId": "deleteVacancy",
+        "parameters": [
+          {
+            "name": "emailId",
+            "in": "path",
+            "description": "Id do vancancy",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "vancancy excluido com sucesso"
+          },
+          "401": {
+            "description": "Usuário logado diferente do que se busca o Id"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
           }
         }
       }
@@ -432,35 +1520,6 @@
   },
   "components": {
     "schemas": {
-      "Users": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "name": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          },
-          "created": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updated": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "active": {
-            "type": "boolean"
-          }
-        }
-      },
       "UserCreateResponse": {
         "type": "object",
         "properties": {
@@ -585,6 +1644,14 @@
       },
       "FieldCreateFormData": {
         "type": "object",
+        "required": [
+          "fieldTypeId",
+          "title",
+          "entity",
+          "startDate",
+          "endDate",
+          "description"
+        ],
         "properties": {
           "fieldTypeId": {
             "type": "integer",
@@ -598,14 +1665,115 @@
           },
           "startDate": {
             "type": "string",
-            "format": "date"
+            "format": "date",
+            "example": "2013-09-02"
           },
           "endDate": {
             "type": "string",
-            "format": "date"
+            "format": "date",
+            "example": "2017-07-10"
           },
           "description": {
             "type": "string"
+          }
+        }
+      },
+      "Email": {
+        "type": "object",
+        "required": [
+          "id",
+          "email",
+          "emailTypeId",
+          "userId",
+          "created",
+          "updated"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "email": {
+            "type": "string"
+          },
+          "emailTypeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "EmailCreateFormData": {
+        "type": "object",
+        "required": [
+          "email",
+          "emailTypeId",
+          "userId"
+        ],
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "emailTypeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "EmailEditFormData": {
+        "type": "object",
+        "required": [
+          "email",
+          "emailTypeId"
+        ],
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "emailTypeId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "EmailType": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "created",
+          "updated"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "type": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },
@@ -647,6 +1815,402 @@
           "stars": {
             "type": "integer",
             "format": "int64"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Phone": {
+        "type": "object",
+        "required": [
+          "id",
+          "phone",
+          "phoneTypeId",
+          "userId",
+          "created",
+          "updated"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "phoneTypeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PhoneCreateFormData": {
+        "type": "object",
+        "required": [
+          "phone",
+          "phoneTypeId",
+          "userId"
+        ],
+        "properties": {
+          "phone": {
+            "type": "string"
+          },
+          "phoneTypeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "PhoneEditFormData": {
+        "type": "object",
+        "required": [
+          "phone",
+          "phoneTypeId"
+        ],
+        "properties": {
+          "phone": {
+            "type": "string"
+          },
+          "phoneTypeId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "PhoneType": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "created",
+          "updated"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "type": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Network": {
+        "type": "object",
+        "required": [
+          "id",
+          "network",
+          "networkTypeId",
+          "userId",
+          "created",
+          "updated"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "network": {
+            "type": "string"
+          },
+          "networkTypeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "NetworkCreateFormData": {
+        "type": "object",
+        "required": [
+          "network",
+          "networkTypeId",
+          "userId"
+        ],
+        "properties": {
+          "network": {
+            "type": "string"
+          },
+          "networkTypeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "NetworkEditFormData": {
+        "type": "object",
+        "required": [
+          "network",
+          "networkTypeId"
+        ],
+        "properties": {
+          "network": {
+            "type": "string"
+          },
+          "networkTypeId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "NetworkType": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "created",
+          "updated"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "type": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Language": {
+        "type": "object",
+        "required": [
+          "id",
+          "network",
+          "networkTypeId",
+          "userId",
+          "created",
+          "updated"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "network": {
+            "type": "string"
+          },
+          "networkTypeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "LanguageCreateFormData": {
+        "type": "object",
+        "required": [
+          "network",
+          "networkTypeId",
+          "userId"
+        ],
+        "properties": {
+          "network": {
+            "type": "string"
+          },
+          "networkTypeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "LanguageEditFormData": {
+        "type": "object",
+        "required": [
+          "network",
+          "networkTypeId"
+        ],
+        "properties": {
+          "network": {
+            "type": "string"
+          },
+          "networkTypeId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "LanguageType": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "created",
+          "updated"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "type": {
+            "type": "string"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Vacancy": {
+        "type": "object",
+        "required": [
+          "id",
+          "vacancy",
+          "vacancyTypeId",
+          "userId",
+          "created",
+          "updated"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "vacancy": {
+            "type": "string"
+          },
+          "vacancyTypeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "VacancyCreateFormData": {
+        "type": "object",
+        "required": [
+          "vacancy",
+          "vacancyTypeId",
+          "userId"
+        ],
+        "properties": {
+          "vacancy": {
+            "type": "string"
+          },
+          "vacancyTypeId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "VacancyEditFormData": {
+        "type": "object",
+        "required": [
+          "vacancy",
+          "vacancyTypeId"
+        ],
+        "properties": {
+          "vacancy": {
+            "type": "string"
+          },
+          "vacancyTypeId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "VacancyType": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "created",
+          "updated"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "type": {
+            "type": "string"
           },
           "created": {
             "type": "string",

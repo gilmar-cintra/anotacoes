@@ -5,24 +5,29 @@ const router = {
   private: Router(),
 };
 
-
-//Retorna todos os tipos de networks
+//1 - Retorna todos os tipos de fields
 router.private.get('/types', PrivateController.getTypes);
 
-//Retorna um networks especifico pelo seu Id, desde que seja de propriedade do usuário
+//2 - Cria o email do usuario
+router.private.post('', PrivateController.setData);
+
+//3 - Retorna todos fields do usuário da sessão vigente
+router.private.get('', PrivateController.getAll);
+
+//4 - Retorna um field especifico pelo seu Id, desde que seja de propriedade do usuário
 router.private.get('/:networkId', PrivateController.getById);
 
-//Retorna todos networks do usuário
-router.private.get('/networks', PrivateController.getAll);
+//5 - Atualiza um field especifico pelo seu Id, desde que seja de propriedade do usuário
+router.private.put('/:networkId', PrivateController.updateData);
 
-//Cria o telefone do usuario
-router.private.post('/networks', PrivateController.setData);
+//6 - Deleta o um field especifico pelo seu Id, desde que seja de propriedade do usuário
+router.private.delete('/:networkId', PrivateController.deleteById);
 
-//Atualiza telefone do usuario
-router.private.put('/networks', PrivateController.updateData);
 
-//Deleta um telefone especifico com o seu Id, desde que seja de propriedade do usuário
-router.private.delete('/networks/:networkId', PrivateController.deleteData);
+
+
+
+
 
 
 export default router;

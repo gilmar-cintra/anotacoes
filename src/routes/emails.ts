@@ -5,24 +5,29 @@ const router = {
   private: Router(),
 };
 
-
-//Retorna todos os tipos de emails
+//1 - Retorna todos os tipos de fields
 router.private.get('/types', PrivateController.getTypes);
 
-//Retorna um email especifico pelo seu Id, desde que seja de propriedade do usuário
+//2 - Cria o email do usuario
+router.private.post('', PrivateController.setData);
+
+//3 - Retorna todos fields do usuário da sessão vigente
+router.private.get('', PrivateController.getAll);
+
+//4 - Retorna um field especifico pelo seu Id, desde que seja de propriedade do usuário
 router.private.get('/:emailId', PrivateController.getById);
 
-//Retorna todos emails do usuário
-router.private.get('/emails', PrivateController.getAll);
+//5 - Atualiza um field especifico pelo seu Id, desde que seja de propriedade do usuário
+router.private.put('/:emailId', PrivateController.updateData);
 
-//Cria o emails do usuario
-router.private.post('/emails', PrivateController.setData);
+//6 - Deleta o um field especifico pelo seu Id, desde que seja de propriedade do usuário
+router.private.delete('/:emailId', PrivateController.deleteById);
 
-//Atualiza emails do usuario
-router.private.put('/emails', PrivateController.updateData);
 
-//Deleta um emails especifico com o seu Id, desde que seja de propriedade do usuário
-router.private.delete('/emails/:emailId', PrivateController.deleteData);
+
+
+
+
 
 
 export default router;

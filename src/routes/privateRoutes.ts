@@ -2,6 +2,7 @@ import {
   NextFunction, Router, Request, Response,
 } from 'express';
 import fields from './fields';
+import emails from './emails';
 import skill from './skills';
 import auth from './auth';
 
@@ -18,7 +19,8 @@ router.use((req: Request, res: Response, next: NextFunction) => {
 
 router.use(auth.private);
 
-router.use('/field', fields.private);
+router.use('/fields', fields.private);
+router.use('/emails', emails.private);
 router.use('/skill', skill.private);
 
 export default router;

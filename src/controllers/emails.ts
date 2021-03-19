@@ -1,26 +1,22 @@
 import { Request, Response } from 'express';
-import { FieldType } from '../db/models/FieldType';
-import { Field } from '../db/models/Field';
+import { EmailType } from '../db/models/EmailType';
+import { Email } from '../db/models/Email';
 import HttpStatus from 'http-status-codes';
 import sequelize from '../db/models/index';
 
-export interface FieldCreateFormData {
+export interface EmailCreateFormData {
   userId: number;
-  fieldTypeId: number;
-  title	: string;
-  entity: string;	
-  startDate	: Date;
-  endDate	: Date;
-  description: string;	
+  emailTypeId: number;
+  email	: string;
 }
 
 
 export class PrivateController {
   public static async getTypes(req: Request, res: Response): Promise<any> {
-    const fieldsTypesRepo = sequelize.getRepository(FieldType);
+    const emailsTypesRepo = sequelize.getRepository(EmailType);
     try {
-      const fieldstypes = await fieldsTypesRepo.findAll();
-      res.send(fieldstypes);
+      const emailstypes = await emailsTypesRepo.findAll();
+      res.send(emailstypes);
     } catch (err) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR);
       res.send(err.toString());
@@ -28,30 +24,32 @@ export class PrivateController {
   }
 
   public static async getAll(req: Request, res: Response): Promise<any> {
+ 
     const userId = (req.user as any).dataValues.id;
 
-      const fieldsRepo = sequelize.getRepository(Field);
+      const emailsRepo = sequelize.getRepository(Email);
 
       try {
-        const fieldList = await fieldsRepo.findAll({ where: { userId } })
-        res.send(fieldList);
+        const emailList = await emailsRepo.findAll({ where: { userId } })
+        res.send(emailList);
       } catch (err) {
         res.status(HttpStatus.INTERNAL_SERVER_ERROR);
         res.send(err.toString());
       }
+      
 
   }
 
   public static async getById(req: Request, res: Response): Promise<any> {
     
-    const fieldId = req.params.fieldId;
+    const emailId = req.params.fieldId;
     const userLoggedId = (req.user as any).dataValues.id;
-    const fieldsRepo = sequelize.getRepository(Field);
+    const emailsRepo = sequelize.getRepository(Email);
 
     try {
-      const field = await fieldsRepo.findByPk(fieldId);
-      if(field.userId == userLoggedId){
-        res.send(field);
+      const email = await emailsRepo.findByPk(emailId);
+      if(email.userId == userLoggedId){
+        res.send(email);
       } else {
         res.status(HttpStatus.UNAUTHORIZED);
         res.send("Você não tem autorização de acesso")
@@ -63,51 +61,49 @@ export class PrivateController {
 
   }
 
+  
   public static async setData(req: Request, res: Response): Promise<any> {
-    const formData: FieldCreateFormData = req.body;
+    
+    const formData: EmailCreateFormData = req.body;
     const userLoggedId = Number((req.user as any).dataValues.id);
 
     const dataField = {
       userId: userLoggedId,
-      fieldTypeId: formData.fieldTypeId,
-      title	: formData.title,
-      entity: formData.entity,
-      startDate	: formData.startDate,
-      endDate	: formData.endDate,
-      description: formData.description
-    } as Field;
+      emailTypeId: formData.emailTypeId,
+      email: formData.email
+    } as Email
 
     //Checar se está vazio ou não
     for (var prop in dataField) {
       if(!dataField[prop]) res.send(HttpStatus.NO_CONTENT)
     }
 
-    const fieldRepo = sequelize.getRepository(Field);
+    const emailRepo = sequelize.getRepository(Email);
     
     try {
-      const newField = await fieldRepo.create(dataField);
+      const newEmail = await emailRepo.create(dataField);
       
-      const field = await fieldRepo.findByPk(newField.id);
+      const email = await emailRepo.findByPk(newEmail.id);
      
-      res.send(field);
+      res.send(email);
     } catch (err) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR);
       res.send(err.toString());
     }
-
-
+ 
   }
 
+ 
   public static async deleteById(req: Request, res: Response): Promise<any> {
     
-    const fieldId = req.params.fieldId;
+    const emailId = req.params.emailId;
     const userLoggedId = Number((req.user as any).dataValues.id);
-    const fieldsRepo = sequelize.getRepository(Field);
+    const emailsRepo = sequelize.getRepository(Email);
 
     try {
-      const field = await fieldsRepo.findByPk(fieldId);
-      if(field.userId == userLoggedId){
-        field.destroy();
+      const email = await emailsRepo.findByPk(emailId);
+      if(email.userId == userLoggedId){
+        email.destroy();
         res.send(HttpStatus.OK);
 
 
@@ -124,9 +120,9 @@ export class PrivateController {
 
   public static async updateData(req: Request, res: Response): Promise<any> {
     
-    const formData: FieldCreateFormData = req.body;
+    const formData: EmailCreateFormData = req.body;
     const userLoggedId = Number((req.user as any).dataValues.id);
-    const fieldId = req.params.fieldId;
+    const emailId = req.params.emailId;
 
     //Verificando se existe algum campo vazio
     for (var prop in formData) {
@@ -134,21 +130,17 @@ export class PrivateController {
     }
     
     try {
-      const fieldRepo = sequelize.getRepository(Field);
-      const oldField = await fieldRepo.findByPk(fieldId);
+      const emailRepo = sequelize.getRepository(Email);
+      const oldEmail = await emailRepo.findByPk(emailId);
 
-      if(oldField.userId == userLoggedId){
+      if(oldEmail.userId == userLoggedId){
       //verificando o que mudou
-      if(oldField.fieldTypeId != formData.fieldTypeId) oldField.fieldTypeId = formData.fieldTypeId;
-      if(oldField.title != formData.title) oldField.title = formData.title;
-      if(oldField.entity != formData.entity) oldField.entity = formData.entity;
-      if(oldField.startDate != formData.startDate) oldField.startDate = formData.startDate;
-      if(oldField.endDate != formData.endDate) oldField.endDate = formData.endDate;
-      if(oldField.description != formData.description) oldField.description = formData.description;
-
-      oldField.save();
-      res.send(oldField);
-
+      if(oldEmail.emailTypeId != formData.emailTypeId) oldEmail.emailTypeId = formData.emailTypeId;
+      if(oldEmail.email != formData.email) oldEmail.email = formData.email;
+      
+      oldEmail.save();
+      res.send(oldEmail);
+      
       } else {
         res.status(HttpStatus.UNAUTHORIZED);
         res.send("Você não tem autorização de acesso")

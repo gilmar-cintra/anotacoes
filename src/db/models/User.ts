@@ -13,6 +13,7 @@ import {
   NotEmpty,
   HasMany,
 } from "sequelize-typescript";
+import { Email } from "./Email";
 import { Field } from "./Field";
 import { SkillLevel } from "./SkillLevel";
 
@@ -52,6 +53,9 @@ export class User extends Model<User> {
 
   @HasMany(() => Field, "userId")
   fields?: Field[];
+
+  @HasMany(() => Email, "userId")
+  emails?: Email[];
 
   @HasMany(() => SkillLevel, "userId")
   skillLevels?: SkillLevel[];
