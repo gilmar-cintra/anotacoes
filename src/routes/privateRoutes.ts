@@ -5,6 +5,7 @@ import fields from './fields';
 import emails from './emails';
 import skill from './skills';
 import auth from './auth';
+import phones from './phones';
 
 const router = Router();
 
@@ -21,6 +22,7 @@ router.use(auth.private);
 
 router.use('/fields', fields.private);
 router.use('/emails', emails.private);
-router.use('/skill', skill.private);
+router.use('/skills', skill.private);
+router.use('/phones', phones.private);
 
 export default router;

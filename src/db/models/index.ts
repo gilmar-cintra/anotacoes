@@ -7,12 +7,14 @@ import { Skills } from "./Skills";
 import { SkillLevel } from "./SkillLevel";
 import { Email } from "./Email";
 import { EmailType } from "./EmailType";
+import { Phone } from "./Phone";
+import { PhoneType } from "./PhoneType";
 
 // DB stuff
 const { NODE_ENV = "development" } = process.env;
 const sequelizeOptions: SequelizeOptions = sequelizeConfig[NODE_ENV];
 const sequelize = new Sequelize(sequelizeOptions);
-const models = [User, Field, FieldType, Email, EmailType, Skills, SkillLevel];
+const models = [User, Field, FieldType, Email, EmailType, Skills, SkillLevel, Phone, PhoneType];
 sequelize.addModels(models);
 // loga no banco
 sequelize

@@ -597,21 +597,21 @@
         }
       }
     },
-    "/skill/skills": {
+    "/skills/types": {
       "get": {
         "tags": [
-          "skills"
+          "Skills"
         ],
-        "summary": "Lista os skills cadastradas no sistema",
-        "description": "Rota privada listar todos os skills do sistema",
-        "operationId": "skills",
+        "summary": "Retorna todos os tipos de skills",
+        "description": "Rota privada listar todos os skills types do sistema",
+        "operationId": "skillsTypes",
         "responses": {
           "200": {
-            "description": "Array de objetos skill",
+            "description": "Array de objetos skill type",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Skills"
+                  "$ref": "#/components/schemas/SkillType"
                 }
               }
             }
@@ -622,19 +622,89 @@
         }
       }
     },
-    "/skill/levels/{userId}": {
+    "/skills": {
+      "post": {
+        "tags": [
+          "Skills"
+        ],
+        "summary": "Cria um novo skill para o usuário",
+        "description": "Rota privada só com acesso logado",
+        "operationId": "createSkill",
+        "requestBody": {
+          "description": "Os campos created e updated são preenchidos automanticamente",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SkillCreateFormData"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/SkillCreateFormData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Objeto skill",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Skill"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Usuário envio algum campo do formulário em branco"
+          },
+          "401": {
+            "description": "Usuário logado diferente do que se busca o Id"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      },
+      "get": {
+        "summary": "Retorna todos skills do usuário logado",
+        "description": "Rota privada que lista os skills do usuário na sessão",
+        "operationId": "listSkills",
+        "responses": {
+          "200": {
+            "description": "array de objetos skill",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Skill"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        },
+        "tags": [
+          "Skills"
+        ]
+      }
+    },
+    "/skills/{skillLevelId}": {
       "get": {
         "tags": [
-          "skills"
+          "Skills"
         ],
-        "summary": "Lista os skills do usuário no sistema",
+        "summary": "Retorna um skill especifico pelo seu Id, desde que seja de propriedade do usuário",
         "description": "Rota privada que só pode ser acessado pelo mesmo id de quem estiver logado",
-        "operationId": "listSkills",
+        "operationId": "skill",
         "parameters": [
           {
-            "name": "userId",
+            "name": "skillLevelId",
             "in": "path",
-            "description": "Id do usuário",
+            "description": "Id do skill",
             "required": true,
             "schema": {
               "type": "integer",
@@ -644,14 +714,99 @@
         ],
         "responses": {
           "200": {
-            "description": "Array de objetos skill levels",
+            "description": "Retorna um objeto skill",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SkillsLevels"
+                  "$ref": "#/components/schemas/Skill"
                 }
               }
             }
+          },
+          "401": {
+            "description": "Usuário logado diferente do que se busca"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Skills"
+        ],
+        "summary": "Atualiza um skill especifico pelo seu Id, desde que seja de propriedade do usuário",
+        "description": "Rota privada só com acesso logado",
+        "operationId": "editSkill",
+        "parameters": [
+          {
+            "name": "skillLevelId",
+            "in": "path",
+            "description": "Id do skill level",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Os campos created e updated são preenchidos automanticamente",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SkillCreateFormData"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/SkillCreateFormData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Objeto skill",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Skill"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Usuário envio algum campo do formulário em branco"
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Skills"
+        ],
+        "summary": "Deleta o um skill especifico pelo seu Id, desde que seja de propriedade do usuário",
+        "description": "Rota privada só com acesso logado",
+        "operationId": "deleteSkill",
+        "parameters": [
+          {
+            "name": "skillLevelId",
+            "in": "path",
+            "description": "Id do skill",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "skill excluido com sucesso"
           },
           "401": {
             "description": "Usuário logado diferente do que se busca o Id"
@@ -2146,6 +2301,97 @@
             "format": "int64"
           },
           "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Skills": {
+        "type": "object",
+        "required": [
+          "id",
+          "userId",
+          "skillId",
+          "stars",
+          "created",
+          "updated"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "skillId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "stars": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "SkillCreateFormData": {
+        "type": "object",
+        "required": [
+          "skillId",
+          "stars",
+          "created",
+          "updated"
+        ],
+        "properties": {
+          "skillId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "stars": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "SkillEditFormData": {
+        "type": "object",
+        "required": [
+          "skillId",
+          "stars",
+          "created",
+          "updated"
+        ],
+        "properties": {
+          "skillId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "stars": {
             "type": "integer",
             "format": "int64"
           },

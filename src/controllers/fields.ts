@@ -16,14 +16,17 @@ export interface FieldCreateFormData {
 
 
 export class PrivateController {
+
   public static async getTypes(req: Request, res: Response): Promise<any> {
     const fieldsTypesRepo = sequelize.getRepository(FieldType);
     try {
       const fieldstypes = await fieldsTypesRepo.findAll();
-      res.send(fieldstypes);
+      res.json(fieldstypes);
+      return
     } catch (err) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR);
       res.send(err.toString());
+      return
     }
   }
 
@@ -34,10 +37,12 @@ export class PrivateController {
 
       try {
         const fieldList = await fieldsRepo.findAll({ where: { userId } })
-        res.send(fieldList);
+        res.json(fieldList);
+        return
       } catch (err) {
         res.status(HttpStatus.INTERNAL_SERVER_ERROR);
         res.send(err.toString());
+        return
       }
 
   }
@@ -51,21 +56,24 @@ export class PrivateController {
     try {
       const field = await fieldsRepo.findByPk(fieldId);
       if(field.userId == userLoggedId){
-        res.send(field);
+        res.json(field);
+        return
       } else {
         res.status(HttpStatus.UNAUTHORIZED);
         res.send("Você não tem autorização de acesso")
+        return
       }
     } catch (err) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR);
       res.send(err.toString());
+      return
     }
 
   }
 
   public static async setData(req: Request, res: Response): Promise<any> {
     const formData: FieldCreateFormData = req.body;
-    const userLoggedId = Number((req.user as any).dataValues.id);
+    const userLoggedId = (req.user as any).dataValues.id;
 
     const dataField = {
       userId: userLoggedId,
@@ -79,7 +87,11 @@ export class PrivateController {
 
     //Checar se está vazio ou não
     for (var prop in dataField) {
-      if(!dataField[prop]) res.send(HttpStatus.NO_CONTENT)
+      if(!dataField[prop]) {
+        res.status(HttpStatus.BAD_REQUEST)
+        res.send(`O seguinte campo não foi preenchido '${prop}'`)
+        return
+      }
     }
 
     const fieldRepo = sequelize.getRepository(Field);
@@ -89,10 +101,12 @@ export class PrivateController {
       
       const field = await fieldRepo.findByPk(newField.id);
      
-      res.send(field);
+      res.json(field);
+      return
     } catch (err) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR);
       res.send(err.toString());
+      return
     }
 
 
@@ -101,7 +115,7 @@ export class PrivateController {
   public static async deleteById(req: Request, res: Response): Promise<any> {
     
     const fieldId = req.params.fieldId;
-    const userLoggedId = Number((req.user as any).dataValues.id);
+    const userLoggedId = (req.user as any).dataValues.id;
     const fieldsRepo = sequelize.getRepository(Field);
 
     try {
@@ -109,15 +123,17 @@ export class PrivateController {
       if(field.userId == userLoggedId){
         field.destroy();
         res.send(HttpStatus.OK);
-
+        return
 
       } else {
         res.status(HttpStatus.UNAUTHORIZED);
         res.send("Você não tem autorização de acesso")
+        return
       }
     } catch (err) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR);
       res.send(err.toString());
+      return
     }
 
   }
@@ -125,38 +141,39 @@ export class PrivateController {
   public static async updateData(req: Request, res: Response): Promise<any> {
     
     const formData: FieldCreateFormData = req.body;
-    const userLoggedId = Number((req.user as any).dataValues.id);
+    const userLoggedId = (req.user as any).dataValues.id;
     const fieldId = req.params.fieldId;
 
     //Verificando se existe algum campo vazio
     for (var prop in formData) {
-      if(!formData[prop]) res.send(HttpStatus.NO_CONTENT)
+      if(!formData[prop]) {
+        res.status(HttpStatus.BAD_REQUEST)
+        res.send(`O seguinte campo não foi preenchido '${prop}'`)
+        return
+      }
     }
+
     
     try {
       const fieldRepo = sequelize.getRepository(Field);
-      const oldField = await fieldRepo.findByPk(fieldId);
+      let oldField = await fieldRepo.findByPk(fieldId);
 
       if(oldField.userId == userLoggedId){
-      //verificando o que mudou
-      if(oldField.fieldTypeId != formData.fieldTypeId) oldField.fieldTypeId = formData.fieldTypeId;
-      if(oldField.title != formData.title) oldField.title = formData.title;
-      if(oldField.entity != formData.entity) oldField.entity = formData.entity;
-      if(oldField.startDate != formData.startDate) oldField.startDate = formData.startDate;
-      if(oldField.endDate != formData.endDate) oldField.endDate = formData.endDate;
-      if(oldField.description != formData.description) oldField.description = formData.description;
-
+      oldField = await oldField.update(formData);
       oldField.save();
-      res.send(oldField);
+      res.json(oldField);
+      return
 
       } else {
         res.status(HttpStatus.UNAUTHORIZED);
         res.send("Você não tem autorização de acesso")
+        return
       }
 
     } catch (err) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR);
       res.send(err.toString());
+      return
     }
 
 

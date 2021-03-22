@@ -1,23 +1,24 @@
 import { Request, Response } from 'express';
-import { EmailType } from '../db/models/EmailType';
-import { Email } from '../db/models/Email';
+import { PhoneType } from '../db/models/PhoneType';
+import { Phone } from '../db/models/Phone';
 import HttpStatus from 'http-status-codes';
 import sequelize from '../db/models/index';
 
-export interface EmailCreateFormData {
+export interface PhoneCreateFormData {
   userId: number;
-  emailTypeId: number;
-  email	: string;
+  phoneTypeId: number;
+  phone	: string;
 }
 
 
 export class PrivateController {
   
   public static async getTypes(req: Request, res: Response): Promise<any> {
-    const emailsTypesRepo = sequelize.getRepository(EmailType);
+    
+    const phonesTypesRepo = sequelize.getRepository(PhoneType);
     try {
-      const emailstypes = await emailsTypesRepo.findAll();
-      res.json(emailstypes);
+      const phonestypes = await phonesTypesRepo.findAll();
+      res.json(phonestypes);
       return
     } catch (err) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -30,11 +31,11 @@ export class PrivateController {
  
     const userId = (req.user as any).dataValues.id;
 
-      const emailsRepo = sequelize.getRepository(Email);
+      const PhonesRepo = sequelize.getRepository(Phone);
 
       try {
-        const emailList = await emailsRepo.findAll({ where: { userId } })
-        res.json(emailList);
+        const phoneList = await PhonesRepo.findAll({ where: { userId } })
+        res.json(phoneList);
         return
       } catch (err) {
         res.status(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -47,14 +48,14 @@ export class PrivateController {
 
   public static async getById(req: Request, res: Response): Promise<any> {
     
-    const emailId = req.params.emailId;
+    const phoneId = req.params.phoneId;
     const userLoggedId = (req.user as any).dataValues.id;
-    const emailsRepo = sequelize.getRepository(Email);
+    const phoneRepo = sequelize.getRepository(Phone);
 
     try {
-      const email = await emailsRepo.findByPk(emailId);
-      if(email.userId == userLoggedId){
-        res.json(email);
+      const phone = await phoneRepo.findByPk(phoneId);
+      if(phone.userId == userLoggedId){
+        res.json(phone);
         return
       } else {
         res.status(HttpStatus.UNAUTHORIZED);
@@ -69,17 +70,16 @@ export class PrivateController {
 
   }
 
-  
   public static async setData(req: Request, res: Response): Promise<any> {
     
-    const formData: EmailCreateFormData = req.body;
+    const formData: PhoneCreateFormData = req.body;
     const userLoggedId = (req.user as any).dataValues.id;
 
     const dataField = {
       userId: userLoggedId,
-      emailTypeId: formData.emailTypeId,
-      email: formData.email
-    } as Email
+      phoneTypeId: formData.phoneTypeId,
+      phone: formData.phone
+    } as Phone
 
     //Checar se está vazio ou não
     for (var prop in dataField) {
@@ -90,12 +90,12 @@ export class PrivateController {
       }
     }
 
-    const emailRepo = sequelize.getRepository(Email);
+    const emailRepo = sequelize.getRepository(Phone);
     
     try {
-      const newEmail = await emailRepo.create(dataField);
-      const email = await emailRepo.findByPk(newEmail.id);     
-      res.json(email);
+      const newPhone = await emailRepo.create(dataField);
+      const phone = await emailRepo.findByPk(newPhone.id);     
+      res.json(phone);
       return
     } catch (err) {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -105,17 +105,16 @@ export class PrivateController {
  
   }
 
- 
   public static async deleteById(req: Request, res: Response): Promise<any> {
     
-    const emailId = req.params.emailId;
+    const phoneId = req.params.phoneId;
     const userLoggedId = (req.user as any).dataValues.id;
-    const emailsRepo = sequelize.getRepository(Email);
+    const phonesRepo = sequelize.getRepository(Phone);
 
     try {
-      const email = await emailsRepo.findByPk(emailId);
-      if(email.userId == userLoggedId){
-        email.destroy();
+      const phone = await phonesRepo.findByPk(phoneId);
+      if(phone.userId == userLoggedId){
+        phone.destroy();
         res.send(HttpStatus.OK);
         return
 
@@ -134,9 +133,9 @@ export class PrivateController {
 
   public static async updateData(req: Request, res: Response): Promise<any> {
     
-    const formData: EmailCreateFormData = req.body;
+    const formData: PhoneCreateFormData = req.body;
     const userLoggedId = (req.user as any).dataValues.id;
-    const emailId = req.params.emailId;
+    const phoneId = req.params.phoneId;
 
     //Verificando se existe algum campo vazio
     for (var prop in formData) {
@@ -148,13 +147,13 @@ export class PrivateController {
     }
     
     try {
-      const emailRepo = sequelize.getRepository(Email);
-      let oldEmail = await emailRepo.findByPk(emailId);
+      const phoneRepo = sequelize.getRepository(Phone);
+      let oldPhone = await phoneRepo.findByPk(phoneId);
 
-      if(oldEmail.userId == userLoggedId){
-        oldEmail = await oldEmail.update(formData);
-        oldEmail.save();
-        res.json(oldEmail);
+      if(oldPhone.userId == userLoggedId){
+        oldPhone = await oldPhone.update(formData);
+        oldPhone.save();
+        res.json(oldPhone);
         return
       
       } else {
