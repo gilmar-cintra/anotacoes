@@ -12,8 +12,8 @@ import {
 } from "sequelize-typescript";
 import { User } from "./User";
 
-@Table({ tableName: "vacancies" })
-export class Vacancy extends Model<Vacancy> {
+@Table({ tableName: "goals" })
+export class Goal extends Model<Goal> {
   @AllowNull(false)
   @Column(DataType.INTEGER)
   userId: number;
@@ -22,7 +22,7 @@ export class Vacancy extends Model<Vacancy> {
   @AllowNull(false)
   @NotEmpty
   @Column(DataType.TEXT)
-  vacancy: string;
+  goal: string;
 
   @CreatedAt
   @Column(DataType.DATE)

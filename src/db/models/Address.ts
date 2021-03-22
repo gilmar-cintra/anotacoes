@@ -12,17 +12,39 @@ import {
 } from "sequelize-typescript";
 import { User } from "./User";
 
-@Table({ tableName: "vacancies" })
-export class Vacancy extends Model<Vacancy> {
+@Table({ tableName: "addresses" })
+export class Address extends Model<Address> {
   @AllowNull(false)
   @Column(DataType.INTEGER)
   userId: number;
 
+  @AllowNull(false)
+  @NotEmpty
+  @Column(DataType.TEXT)
+  place: string;
+
+  @AllowNull(true)
+  @Column(DataType.TEXT)
+  number?: string;
 
   @AllowNull(false)
   @NotEmpty
   @Column(DataType.TEXT)
-  vacancy: string;
+  city: string;
+
+  @AllowNull(false)
+  @NotEmpty
+  @Column(DataType.TEXT)
+  state: string;
+
+  @AllowNull(false)
+  @NotEmpty
+  @Column(DataType.TEXT)
+  zipcode: string;
+
+  @AllowNull(true)
+  @Column(DataType.TEXT)
+  complement?: string;
 
   @CreatedAt
   @Column(DataType.DATE)

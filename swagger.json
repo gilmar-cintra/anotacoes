@@ -1352,7 +1352,7 @@
         ]
       }
     },
-    "/languages/{languageId}": {
+    "/languages/{languageLevelId}": {
       "get": {
         "tags": [
           "Languages"
@@ -1362,9 +1362,9 @@
         "operationId": "language",
         "parameters": [
           {
-            "name": "languageId",
+            "name": "languageLevelId",
             "in": "path",
-            "description": "Id do language",
+            "description": "Id do level language",
             "required": true,
             "schema": {
               "type": "integer",
@@ -1400,7 +1400,7 @@
         "operationId": "editLanguage",
         "parameters": [
           {
-            "name": "languageId",
+            "name": "languageLevelId",
             "in": "path",
             "description": "Id do language",
             "required": true,
@@ -1454,7 +1454,7 @@
         "operationId": "deleteLanguage",
         "parameters": [
           {
-            "name": "languageId",
+            "name": "languageLevelId",
             "in": "path",
             "description": "Id do language",
             "required": true,
@@ -1477,7 +1477,7 @@
         }
       }
     },
-    "/vancancies": {
+    "/vacancies": {
       "post": {
         "tags": [
           "Vancancies"
@@ -1491,12 +1491,12 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/EmailCreateFormData"
+                "$ref": "#/components/schemas/VacancyCreateFormData"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/EmailCreateFormData"
+                "$ref": "#/components/schemas/VacancyCreateFormData"
               }
             }
           }
@@ -1547,7 +1547,7 @@
         ]
       }
     },
-    "/vancancies/{emailId}": {
+    "/vacancies/{vacancyId}": {
       "get": {
         "tags": [
           "Vancancies"
@@ -1557,7 +1557,7 @@
         "operationId": "vancancy",
         "parameters": [
           {
-            "name": "emailId",
+            "name": "vacancyId",
             "in": "path",
             "description": "Id do vancancy",
             "required": true,
@@ -1595,7 +1595,7 @@
         "operationId": "editVacancy",
         "parameters": [
           {
-            "name": "emailId",
+            "name": "vacancyId",
             "in": "path",
             "description": "Id do vancancy",
             "required": true,
@@ -1611,12 +1611,12 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/EmailEditFormData"
+                "$ref": "#/components/schemas/VacancyEditFormData"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/EmailEditFormData"
+                "$ref": "#/components/schemas/VacancyEditFormData"
               }
             }
           }
@@ -1649,7 +1649,7 @@
         "operationId": "deleteVacancy",
         "parameters": [
           {
-            "name": "emailId",
+            "name": "vacancyId",
             "in": "path",
             "description": "Id do vancancy",
             "required": true,
@@ -2119,12 +2119,12 @@
       "NetworkCreateFormData": {
         "type": "object",
         "required": [
-          "network",
+          "link",
           "networkTypeId",
           "userId"
         ],
         "properties": {
-          "network": {
+          "link": {
             "type": "string"
           },
           "networkTypeId": {
@@ -2140,11 +2140,11 @@
       "NetworkEditFormData": {
         "type": "object",
         "required": [
-          "network",
+          "link",
           "networkTypeId"
         ],
         "properties": {
-          "network": {
+          "link": {
             "type": "string"
           },
           "networkTypeId": {
@@ -2157,7 +2157,7 @@
         "type": "object",
         "required": [
           "id",
-          "type",
+          "network",
           "created",
           "updated"
         ],
@@ -2166,7 +2166,7 @@
             "type": "integer",
             "format": "int64"
           },
-          "type": {
+          "network": {
             "type": "string"
           },
           "created": {
@@ -2218,19 +2218,15 @@
       "LanguageCreateFormData": {
         "type": "object",
         "required": [
-          "network",
-          "networkTypeId",
-          "userId"
+          "stars",
+          "languageId"
         ],
         "properties": {
-          "network": {
-            "type": "string"
-          },
-          "networkTypeId": {
+          "languageId": {
             "type": "integer",
             "format": "int64"
           },
-          "userId": {
+          "stars": {
             "type": "integer",
             "format": "int64"
           }
@@ -2239,14 +2235,15 @@
       "LanguageEditFormData": {
         "type": "object",
         "required": [
-          "network",
-          "networkTypeId"
+          "stars",
+          "languageId"
         ],
         "properties": {
-          "network": {
-            "type": "string"
+          "stars": {
+            "type": "integer",
+            "format": "int64"
           },
-          "networkTypeId": {
+          "languageId": {
             "type": "integer",
             "format": "int64"
           }
@@ -2256,7 +2253,7 @@
         "type": "object",
         "required": [
           "id",
-          "type",
+          "network",
           "created",
           "updated"
         ],
@@ -2408,63 +2405,22 @@
       "VacancyCreateFormData": {
         "type": "object",
         "required": [
-          "vacancy",
-          "vacancyTypeId",
-          "userId"
+          "vacancy"
         ],
         "properties": {
           "vacancy": {
             "type": "string"
-          },
-          "vacancyTypeId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "userId": {
-            "type": "integer",
-            "format": "int64"
           }
         }
       },
       "VacancyEditFormData": {
         "type": "object",
         "required": [
-          "vacancy",
-          "vacancyTypeId"
+          "vacancy"
         ],
         "properties": {
           "vacancy": {
             "type": "string"
-          },
-          "vacancyTypeId": {
-            "type": "integer",
-            "format": "int64"
-          }
-        }
-      },
-      "VacancyType": {
-        "type": "object",
-        "required": [
-          "id",
-          "type",
-          "created",
-          "updated"
-        ],
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "type": {
-            "type": "string"
-          },
-          "created": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updated": {
-            "type": "string",
-            "format": "date-time"
           }
         }
       }

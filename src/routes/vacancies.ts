@@ -7,16 +7,17 @@ const router = {
 
 
 
-router.private.post('', PrivateController.setData);
+
 
 router.private.get('', PrivateController.getAll);
 
-router.private.get('/:vacancyId', PrivateController.getById);
+router.private.post('', PrivateController.setData);
 
-router.private.put('/:vacancyId', PrivateController.updateData);
+router.private.get('/:vacancyId', PrivateController.getById);
 
 router.private.delete('/:vacancyId', PrivateController.deleteById);
 
+router.private.put('/:vacancyId', PrivateController.updateData);
 
 
 export default router;

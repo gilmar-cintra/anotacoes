@@ -6,6 +6,11 @@ import emails from './emails';
 import skill from './skills';
 import auth from './auth';
 import phones from './phones';
+import networks from './networks';
+import languages from './languages';
+import vacancies from './vacancies';
+import goals from './goals';
+import addresses from './addresses';
 
 const router = Router();
 
@@ -24,5 +29,10 @@ router.use('/fields', fields.private);
 router.use('/emails', emails.private);
 router.use('/skills', skill.private);
 router.use('/phones', phones.private);
+router.use('/networks', networks.private);
+router.use('/languages', languages.private);
+router.use('/vacancies', vacancies.private);
+router.use('/goals', goals.private);
+router.use('/addresses', addresses.private);
 
 export default router;
