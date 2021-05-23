@@ -118,6 +118,11 @@ O Sequelize é um ORM (Object-Relational Mapper) para Node.js, que tem suporte a
 Segue o comando para instalar todos os pacotes:
 
     yarn add bcryptjs body-parser class-validator connect-redis cors dotenv express express-session helmet http-status-codes lodash passport passport-local pg pg-hstore redis reflect-metadata sequelize sequelize-cli sequelize-typescript
+    
+***Obs:*** Caso for usar o banco de dados MySQL instale o adicione o pacote mysql2 
+```
+yarn add sequelize mysql2
+```
 
 ### 2.3) Os @types dos pacotes
 Em TypeScript, você pode receber vários erros sobre tipos de módulos não encontrado ou os “implíticos” any, que ele não consegue inferir o tipo. Para resolver isso podemos criar um arquivo de declarações *.d.ts ou usar o @types do pacote. 
@@ -463,6 +468,52 @@ module.exports = {
     repositoryMode: true,
   },
 };
+```
+3) Crie o arquivo .sequelizerc na raiz do backend com o seguinte código
+
+```
+const path = require('path');
+
+module.exports = {
+  'config': path.resolve('config', 'sequelize.js'),
+  'migrations-path': path.resolve('migrations'),
+  'seeders-path': path.resolve('seeds'),
+  'models-path': path.resolve('models'),
+}
+
+```
+4) No pasta model > index.js situado na raiz do backend lembresse de registrar todos os modelos e configurar mais ou menos assim
+```
+import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
+
+import sequelizeConfig from '../../config/sequelize';
+import { Pergunta } from './Pergunta';
+
+const { NODE_ENV } = process.env;
+
+// Pega as opções de config/sequelize.js
+const sequelizeOptions: SequelizeOptions = sequelizeConfig[NODE_ENV];
+const sequelize = new Sequelize(sequelizeOptions);
+
+// Adiciona array com todos os nossos models
+sequelize.addModels([
+Pergunta,
+]);
+
+// Testa a conexão tentando se autenticar
+sequelize.authenticate()
+  .then(() => {
+    if (NODE_ENV !== 'test') {
+      // eslint-disable-next-line no-console
+      console.log('Sequelize: Conexão com MySQL estabelecida com sucesso.');
+    }
+  })
+  .catch((err) => {
+    // eslint-disable-next-line no-console
+    console.error('Sequelize: Não foi possível conectar-se com o postgres - ', err);
+  });
+
+export default sequelize;
 ```
 
 **Importante:** Você pode criar o banco de dados (nesse exemplo postgres) por meio de um container, para isso basta criar um arquivo chamado docker-composer.yml na raiz do projeto com o seguinte conteudo:
