@@ -482,7 +482,7 @@ module.exports = {
 }
 
 ```
-4) No pasta model > index.js situado na raiz do backend lembresse de registrar todos os modelos e configurar mais ou menos assim
+4) No pasta src > models > index.ts situado lembresse de registrar todos os modelos e configurar mais ou menos assim
 ```
 import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
 
