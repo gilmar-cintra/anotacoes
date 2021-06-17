@@ -558,6 +558,29 @@ ou
     
 Isso gerará o modelo na pasta model (que não iremos usar, pois definiremos manualmente um .ts) e o arquivo de migração em migrations. Ele já gerará o campo id com autoincremento, o createdAt e o updatedAt.
 
+```
+  sequelize db:migrate                        Run pending migrations
+  sequelize db:migrate:schema:timestamps:add  Update migration table to have timestamps
+  sequelize db:migrate:status                 List the status of all migrations
+  sequelize db:migrate:undo                   Reverts a migration
+  sequelize db:migrate:undo:all               Revert all migrations ran
+  sequelize db:seed                           Run specified seeder
+  sequelize db:seed:undo                      Deletes data from the database
+  sequelize db:seed:all                       Run every seeder
+  sequelize db:seed:undo:all                  Deletes data from the database
+  sequelize db:create                         Create database specified by configuration
+  sequelize db:drop                           Drop database specified by configuration
+  sequelize init                              Initializes project
+  sequelize init:config                       Initializes configuration
+  sequelize init:migrations                   Initializes migrations
+  sequelize init:models                       Initializes models
+  sequelize init:seeders                      Initializes seeders
+  sequelize migration:generate                Generates a new migration file         [sinônimos: migration:create]
+  sequelize model:generate                    Generates a model and its migration        [sinônimos: model:create]
+  sequelize seed:generate                     Generates a new seed file                   [sinônimos: seed:create]
+
+```
+
 ### 5.2) Definindo modelos e estabelecendo relações
 
 Chegou a hora de definir nossos modelos, para isso na pasta src crie uma pasta chamada models e crie o modelo conforme o exemplo de Field.ts
